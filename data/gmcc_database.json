@@ -1,6 +1,6 @@
 {
   "system": "GMCC Human Capital Management System",
-  "timestamp": "2026-11-03T06:33:48.618Z",
+  "timestamp": "2026-11-03T08:04:47.200Z",
   "syncedBy": "Auto-Sync Service",
   "counts": {
     "employees": 30,
@@ -4039,6 +4039,42 @@
       }
     ],
     "auditLogs": [
+      {
+        "id": "AUD-mw0ehgjd-tufy1j",
+        "timestamp": "2026-11-03T08:02:54.073Z",
+        "actorId": "USR-ADMIN",
+        "actorName": "System Administrator",
+        "actorRole": "ADMIN",
+        "module": "AUTH",
+        "action": "LOGIN_SUCCESS",
+        "targetId": "USR-ADMIN",
+        "description": "Pengguna admin (System Administrator) berhasil masuk ke sistem.",
+        "ipAddress": "192.168.10.15"
+      },
+      {
+        "id": "AUD-mw0drpy2-jkh5ks",
+        "timestamp": "2026-11-03T07:42:53.210Z",
+        "actorId": "USR-ADMIN",
+        "actorName": "System Administrator",
+        "actorRole": "ADMIN",
+        "module": "AUTH",
+        "action": "LOGOUT",
+        "targetId": "USR-ADMIN",
+        "description": "Pengguna System Administrator (ADMIN) keluar dari sistem.",
+        "ipAddress": "192.168.10.15"
+      },
+      {
+        "id": "AUD-mw0cah84-a0ggwm",
+        "timestamp": "2026-11-03T07:01:29.140Z",
+        "actorId": "USR-ADMIN",
+        "actorName": "System Administrator",
+        "actorRole": "ADMIN",
+        "module": "LEAVE",
+        "action": "MANUAL_LEDGER_ENTRY",
+        "targetId": "TXN-mw0cah80-dzs6i",
+        "description": "Added ledger entry TXN-mw0cah80-dzs6i: +6 days ANNUAL_LEAVE for EMP-0001",
+        "ipAddress": "192.168.10.15"
+      },
       {
         "id": "AUD-mw0b2i5g-4nj20g",
         "timestamp": "2026-11-03T06:27:17.476Z",
