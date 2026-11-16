@@ -57226,6 +57226,19 @@ var Bell = createLucideIcon("bell", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var BookOpen = createLucideIcon("book-open", [["path", {
+	d: "M12 7v14",
+	key: "1akyts"
+}], ["path", {
+	d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+	key: "ruj8y"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Briefcase = createLucideIcon("briefcase", [["path", {
 	d: "M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16",
 	key: "jecpp"
@@ -58325,6 +58338,34 @@ var Link = createLucideIcon("link", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var ListChecks = createLucideIcon("list-checks", [
+	["path", {
+		d: "M13 5h8",
+		key: "a7qcls"
+	}],
+	["path", {
+		d: "M13 12h8",
+		key: "h98zly"
+	}],
+	["path", {
+		d: "M13 19h8",
+		key: "c3s6r1"
+	}],
+	["path", {
+		d: "m3 17 2 2 4-4",
+		key: "1jhpwq"
+	}],
+	["path", {
+		d: "m3 7 2 2 4-4",
+		key: "1obspn"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Lock = createLucideIcon("lock", [["rect", {
 	width: "18",
 	height: "11",
@@ -58799,6 +58840,36 @@ var Sparkles = createLucideIcon("sparkles", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Stethoscope = createLucideIcon("stethoscope", [
+	["path", {
+		d: "M11 2v2",
+		key: "1539x4"
+	}],
+	["path", {
+		d: "M5 2v2",
+		key: "1yf1q8"
+	}],
+	["path", {
+		d: "M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1",
+		key: "rb5t3r"
+	}],
+	["path", {
+		d: "M8 15a6 6 0 0 0 12 0v-3",
+		key: "x18d4x"
+	}],
+	["circle", {
+		cx: "20",
+		cy: "10",
+		r: "2",
+		key: "ts1r5v"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var TableProperties = createLucideIcon("table-properties", [
 	["path", {
 		d: "M15 3v18",
@@ -58957,6 +59028,26 @@ var TriangleAlert = createLucideIcon("triangle-alert", [
 	["path", {
 		d: "M12 17h.01",
 		key: "p32p05"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Umbrella = createLucideIcon("umbrella", [
+	["path", {
+		d: "M12 13v7a2 2 0 0 0 4 0",
+		key: "rpgb42"
+	}],
+	["path", {
+		d: "M12 2v2",
+		key: "tus03m"
+	}],
+	["path", {
+		d: "M20.992 13a1 1 0 0 0 .97-1.274 10.284 10.284 0 0 0-19.923 0A1 1 0 0 0 3 13z",
+		key: "124nyo"
 	}]
 ]);
 /**
@@ -61595,9 +61686,11 @@ var ContractRenewalModal = ({ contract, onClose }) => {
 //#endregion
 //#region src/modules/dashboard/OverviewDashboard.tsx
 var OverviewDashboard = ({ onNavigate }) => {
-	const { currentUser, employees, contracts, leaveApplications, trainingPlans, auditLogs, departments, getDaysUntilExpiry, getLeaveBalanceSummary } = useApp();
+	const { currentUser, employees, contracts, leaveApplications, trainingPlans, trainingAttendance, auditLogs, departments, getDaysUntilExpiry, getLeaveBalanceSummary, updateTrainingPlanStatus } = useApp();
 	const [selectedContractForRenewal, setSelectedContractForRenewal] = (0, import_react.useState)(null);
 	const [selectedAppForDecision, setSelectedAppForDecision] = (0, import_react.useState)(null);
+	const [selectedPlanForApproval, setSelectedPlanForApproval] = (0, import_react.useState)(null);
+	const [trainingApprovalNotes, setTrainingApprovalNotes] = (0, import_react.useState)("");
 	getLeaveBalanceSummary(currentUser.employeeId || "", "ANNUAL_LEAVE");
 	const isDeptHead = currentUser.role === "DEPT_HEAD";
 	const myDeptId = currentUser.departmentId;
@@ -61654,6 +61747,43 @@ var OverviewDashboard = ({ onNavigate }) => {
 		return true;
 	});
 	const scopedTrainingPlans = isDeptHead ? trainingPlans.filter((p) => p.departmentId === myDeptId || p.trainingScope === "GENERIC_ALL_STAFF") : trainingPlans;
+	const hasTrainingApprovalAccess = currentUser.role === "HC" || currentUser.role === "GM";
+	const pendingTrainingForRole = hasTrainingApprovalAccess ? trainingPlans.filter((p) => {
+		if (currentUser.role === "HC") return p.status === "SUBMITTED_BY_DEPT_HEAD";
+		if (currentUser.role === "GM") return p.status === "CONSOLIDATED_BY_HC" || p.status === "SUBMITTED_TO_GM" || p.status === "SUBMITTED_BY_DEPT_HEAD";
+		return false;
+	}) : [];
+	const hasLeaveApprovalAccess = [
+		"DEPT_HEAD",
+		"HC",
+		"GM",
+		"ADMIN"
+	].includes(currentUser.role);
+	const hasContractApprovalAccess = [
+		"HC",
+		"GM",
+		"ADMIN"
+	].includes(currentUser.role);
+	const pendingContractsForApproval = hasContractApprovalAccess ? contractExpiryAlerts : [];
+	const hasAttendanceVerifyAccess = [
+		"DEPT_HEAD",
+		"HC",
+		"GM",
+		"ADMIN"
+	].includes(currentUser.role);
+	const pendingAttendanceForRole = hasAttendanceVerifyAccess ? trainingAttendance.filter((a) => {
+		if (a.status !== "PENDING") return false;
+		if (isDeptHead) return a.departmentId === myDeptId;
+		return true;
+	}) : [];
+	const totalPendingApprovalsForUser = pendingForCurrentRole.length + pendingTrainingForRole.length + pendingContractsForApproval.length + pendingAttendanceForRole.length;
+	const canSeeLeaveReports = [
+		"DEPT_HEAD",
+		"HC",
+		"GM",
+		"ADMIN",
+		"AUDITOR"
+	].includes(currentUser.role);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
@@ -61714,6 +61844,98 @@ var OverviewDashboard = ({ onNavigate }) => {
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
 					className: "font-mono font-bold bg-white px-2 py-0.5 rounded border border-emerald-300 text-emerald-800 shrink-0",
 					children: [scopedEmployees.length, " Staf Departemen"]
+				})]
+			}),
+			(hasLeaveApprovalAccess || hasTrainingApprovalAccess || hasContractApprovalAccess) && totalPendingApprovalsForUser > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "bg-gradient-to-r from-amber-50 via-rose-50/70 to-amber-50 border-2 border-amber-300 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2.5",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-xs",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, { className: "w-5 h-5 animate-bounce" })
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+							className: "text-sm font-extrabold text-slate-900 flex items-center gap-2 flex-wrap",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Perlu Persetujuan Anda (Approval Alert Center)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-600 text-white",
+								children: [
+									totalPendingApprovalsForUser,
+									" Item Menunggu Aksi (",
+									currentUser.role,
+									")"
+								]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-[11px] text-slate-600",
+							children: "Klik tombol alert di bawah untuk langsung meninjau & menyetujui pengajuan sesuai hak akses Anda."
+						})] })]
+					})
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap gap-2.5",
+					children: [
+						hasTrainingApprovalAccess && pendingTrainingForRole.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => onNavigate("training", void 0, "PLANS"),
+							className: "inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold shadow-sm transition-all cursor-pointer ring-2 ring-purple-300",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GraduationCap, { className: "w-4 h-4 shrink-0" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+									pendingTrainingForRole.length,
+									" Training Perlu Di-Approved (",
+									currentUser.role === "HC" ? "Review HC" : "GM Approval",
+									")"
+								] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "px-1.5 py-0.5 rounded-full bg-white text-purple-800 text-[10px] font-extrabold",
+									children: pendingTrainingForRole.length
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-3.5 h-3.5" })
+							]
+						}),
+						hasLeaveApprovalAccess && pendingForCurrentRole.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => setSelectedAppForDecision(pendingForCurrentRole[0]),
+							className: "inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer ring-2 ring-amber-300",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calendar, { className: "w-4 h-4 shrink-0" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [pendingForCurrentRole.length, " Pengajuan Cuti Perlu Di-Approved"] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "px-1.5 py-0.5 rounded-full bg-white text-amber-800 text-[10px] font-extrabold",
+									children: pendingForCurrentRole.length
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-3.5 h-3.5" })
+							]
+						}),
+						hasContractApprovalAccess && pendingContractsForApproval.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => onNavigate("contracts"),
+							className: "inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer ring-2 ring-rose-300",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileCheck2, { className: "w-4 h-4 shrink-0" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [pendingContractsForApproval.length, " Kontrak Perlu Evaluasi / Perpanjang"] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "px-1.5 py-0.5 rounded-full bg-white text-rose-800 text-[10px] font-extrabold",
+									children: pendingContractsForApproval.length
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-3.5 h-3.5" })
+							]
+						}),
+						hasAttendanceVerifyAccess && pendingAttendanceForRole.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => onNavigate("training", void 0, "ATTENDANCE"),
+							className: "inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer ring-2 ring-blue-300",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "w-4 h-4 shrink-0" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [pendingAttendanceForRole.length, " Presensi Training Perlu Verifikasi"] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "px-1.5 py-0.5 rounded-full bg-white text-blue-800 text-[10px] font-extrabold",
+									children: pendingAttendanceForRole.length
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-3.5 h-3.5" })
+							]
+						})
+					]
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -61827,23 +62049,30 @@ var OverviewDashboard = ({ onNavigate }) => {
 						]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						onClick: () => onNavigate("training"),
-						className: "bg-white rounded-xl border border-slate-200 p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all cursor-pointer",
+						onClick: () => onNavigate("training", void 0, hasTrainingApprovalAccess && pendingTrainingForRole.length > 0 ? "PLANS" : void 0),
+						className: `bg-white rounded-xl border p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all cursor-pointer ${hasTrainingApprovalAccess && pendingTrainingForRole.length > 0 ? "border-purple-300 ring-1 ring-purple-200" : "border-slate-200"}`,
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex items-center justify-between text-xs text-slate-500 mb-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 									className: "font-semibold uppercase tracking-wider text-slate-700",
 									children: isDeptHead ? "Training Departemen & Generic" : "Annual Training Plans"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(GraduationCap, { className: "w-4 h-4 text-blue-700" })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(GraduationCap, { className: `w-4 h-4 ${hasTrainingApprovalAccess && pendingTrainingForRole.length > 0 ? "text-purple-700 animate-pulse" : "text-blue-700"}` })]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "text-2xl font-bold text-slate-900",
 								children: scopedTrainingPlans.length
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "text-[11px] text-slate-500 mt-1",
-								children: [scopedTrainingPlans.filter((p) => p.status === "APPROVED_BY_GM").length, " program disahkan GM"]
+								children: hasTrainingApprovalAccess && pendingTrainingForRole.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "text-purple-700 font-bold flex items-center gap-1",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "w-1.5 h-1.5 rounded-full bg-purple-600 animate-ping" }),
+										pendingTrainingForRole.length,
+										" rencana perlu di-approved Anda"
+									]
+								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [scopedTrainingPlans.filter((p) => p.status === "APPROVED_BY_GM").length, " program disahkan GM"] })
 							})
 						]
 					})
@@ -61890,23 +62119,39 @@ var OverviewDashboard = ({ onNavigate }) => {
 											children: "Execute Staff → Dept Head → HC → GM 4-stage sequential workflow."
 										})] })]
 									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										onClick: () => onNavigate("leave-review"),
+									canSeeLeaveReports && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										onClick: () => onNavigate("leave-review", void 0, "yearly-summary"),
 										className: "p-4 rounded-xl border border-emerald-300 bg-emerald-50/30 hover:border-emerald-600 hover:bg-emerald-50/60 text-left transition-all group flex items-start gap-3",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 											className: "w-9 h-9 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 border border-emerald-200 group-hover:bg-emerald-700 group-hover:text-white transition-colors",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "w-5 h-5" })
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h4", {
 											className: "text-xs font-bold text-slate-900 flex items-center gap-1.5",
-											children: ["Review & Laporan Cuti 2025", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											children: ["Review & Saldo Cuti Tahunan", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 												className: "text-[9px] font-bold bg-emerald-700 text-white px-1.5 py-0.2 rounded-full",
-												children: "Report"
+												children: "Prorate"
 											})]
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 											className: "text-[11px] text-slate-600 mt-0.5",
-											children: currentUser.role === "DEPT_HEAD" ? "Dashboard review cuti 2025 khusus staf departemen Anda." : "Laporan hak cuti, cuti diambil & sisa seluruh karyawan GMCC."
+											children: currentUser.role === "DEPT_HEAD" ? "Dashboard review hak cuti prorate & sisa staf departemen Anda." : "Laporan hak cuti prorate, carry forward & sisa seluruh karyawan GMCC."
 										})] })]
-									}),
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										onClick: () => onNavigate("leave-review", void 0, "taken-report"),
+										className: "p-4 rounded-xl border border-blue-300 bg-blue-50/30 hover:border-blue-600 hover:bg-blue-50/60 text-left transition-all group flex items-start gap-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "w-9 h-9 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center shrink-0 border border-blue-200 group-hover:bg-blue-700 group-hover:text-white transition-colors",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarRange, { className: "w-5 h-5" })
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h4", {
+											className: "text-xs font-bold text-slate-900 flex items-center gap-1.5",
+											children: ["Laporan Pengambilan Cuti & Libur", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "text-[9px] font-bold bg-blue-700 text-white px-1.5 py-0.2 rounded-full",
+												children: "Bulan / MTD / Tahun"
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-[11px] text-slate-600 mt-0.5",
+											children: "Rekap cuti tahunan, EO, Pending Off, PHC, sakit & izin lainnya per Bulan, MTD, atau Tahun."
+										})] })]
+									})] }),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										onClick: () => onNavigate("contracts"),
 										className: "p-4 rounded-xl border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/40 text-left transition-all group flex items-start gap-3",
@@ -62169,6 +62414,86 @@ var OverviewDashboard = ({ onNavigate }) => {
 									}, app.id);
 								})
 							})]
+						}),
+						hasTrainingApprovalAccess && pendingTrainingForRole.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "bg-white border border-purple-200 rounded-xl p-5 shadow-xs space-y-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between pb-2 border-b border-purple-100",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "w-7 h-7 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(GraduationCap, { className: "w-4 h-4" })
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h4", {
+										className: "text-xs font-bold text-purple-950 flex items-center gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+											"Antrean Persetujuan Training (Perlu Approved ",
+											currentUser.role,
+											")"
+										] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-700 text-white animate-pulse",
+											children: [pendingTrainingForRole.length, " Perlu Aksi"]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[11px] text-purple-800",
+										children: currentUser.role === "HC" ? "Rencana pelatihan yang diajukan Dept Head menunggu review & konsolidasi HC untuk diteruskan ke GM." : "Rencana pelatihan menunggu pengesahan akhir (Executive Approval) General Manager."
+									})] })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									onClick: () => onNavigate("training", void 0, "PLANS"),
+									className: "text-xs font-bold text-purple-800 hover:text-purple-950 hover:underline flex items-center gap-1 cursor-pointer",
+									children: ["Lihat Semua Training ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "w-3.5 h-3.5" })]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "space-y-2",
+								children: pendingTrainingForRole.slice(0, 5).map((plan) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "p-3 rounded-xl border border-purple-200 bg-purple-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-2 flex-wrap",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-mono text-[10px] font-bold text-purple-800 bg-white px-1.5 py-0.5 rounded border border-purple-200",
+													children: plan.id
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-bold text-slate-900",
+													children: plan.title
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200",
+													children: plan.status.replace(/_/g, " ")
+												})
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "text-[11px] text-slate-600 flex items-center gap-2 flex-wrap",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: plan.departmentName }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "·" }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+													plan.proposedStartDate,
+													" (",
+													plan.trainingHours || 4,
+													" Jam)"
+												] }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "·" }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "font-mono font-semibold text-slate-800",
+													children: ["Rp ", (plan.estimatedCost || 0).toLocaleString("id-ID")]
+												})
+											]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => {
+											setTrainingApprovalNotes(currentUser.role === "HC" ? "Direview & dikonsolidasikan oleh Human Capital" : "Disetujui & disahkan oleh General Manager");
+											setSelectedPlanForApproval(plan);
+										},
+										className: "px-3 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-1.5 self-end sm:self-center shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: currentUser.role === "HC" ? "Review & Teruskan ke GM" : "Sahkan (GM Approval)" })]
+									})]
+								}, plan.id))
+							})]
 						})
 					]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -62230,6 +62555,106 @@ var OverviewDashboard = ({ onNavigate }) => {
 			selectedAppForDecision && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LeaveApprovalModal, {
 				application: selectedAppForDecision,
 				onClose: () => setSelectedAppForDecision(null)
+			}),
+			selectedPlanForApproval && hasTrainingApprovalAccess && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "p-5 bg-purple-900 text-white flex items-center justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-2.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GraduationCap, { className: "w-5 h-5 text-purple-200" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+								className: "text-sm font-bold",
+								children: currentUser.role === "HC" ? "Review & Konsolidasi Training (HC)" : "Pengesahan Rencana Training (GM Approval)"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-[11px] text-purple-200 font-mono",
+								children: selectedPlanForApproval.id
+							})] })]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setSelectedPlanForApproval(null),
+							className: "text-purple-200 hover:text-white cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleX, { className: "w-5 h-5" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "p-5 space-y-4 text-xs",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "font-bold text-slate-900 text-sm",
+										children: selectedPlanForApproval.title
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-slate-600",
+										children: [
+											"Departemen: ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: selectedPlanForApproval.departmentName }),
+											" · Trainer: ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: selectedPlanForApproval.trainerName || "-" })
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-slate-600",
+										children: [
+											"Jadwal: ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: selectedPlanForApproval.proposedStartDate }),
+											" (",
+											selectedPlanForApproval.trainingHours || 4,
+											" Jam) · Estimasi Biaya: ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", {
+												className: "font-mono",
+												children: ["Rp ", (selectedPlanForApproval.estimatedCost || 0).toLocaleString("id-ID")]
+											})
+										]
+									}),
+									selectedPlanForApproval.objectives && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										className: "text-slate-500 italic pt-1 border-t border-slate-200/80",
+										children: [
+											"\"",
+											selectedPlanForApproval.objectives,
+											"\""
+										]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "block font-semibold text-slate-700 mb-1.5",
+								children: [
+									"Catatan Persetujuan (",
+									currentUser.role,
+									"):"
+								]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+								rows: 3,
+								value: trainingApprovalNotes,
+								onChange: (e) => setTrainingApprovalNotes(e.target.value),
+								placeholder: "Masukkan catatan persetujuan...",
+								className: "w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:outline-hidden focus:border-purple-600"
+							})] }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-end gap-2 pt-2 border-t border-slate-100",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setSelectedPlanForApproval(null),
+									className: "px-3.5 py-2 rounded-lg border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer",
+									children: "Batal"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => {
+										const nextStatus = currentUser.role === "HC" ? "CONSOLIDATED_BY_HC" : "APPROVED_BY_GM";
+										updateTrainingPlanStatus(selectedPlanForApproval.id, nextStatus, trainingApprovalNotes.trim() || (currentUser.role === "HC" ? "Konsolidasi disetujui HC" : "Disahkan oleh General Manager"));
+										setSelectedPlanForApproval(null);
+									},
+									className: "px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold shadow-xs cursor-pointer flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: currentUser.role === "HC" ? "Konsolidasi & Teruskan ke GM" : "Setujui & Sahkan (GM)" })]
+								})]
+							})
+						]
+					})]
+				})
 			})
 		]
 	});
@@ -76906,9 +77331,12 @@ var TrainingFolderView = ({ plans }) => {
 };
 //#endregion
 //#region src/modules/training/TrainingManager.tsx
-var TrainingManager = () => {
+var TrainingManager = ({ initialTab }) => {
 	const { currentUser, trainingPlans, trainingSessions, trainingAttendance, annualKpiTarget, updateTrainingPlanStatus, deleteTrainingPlan, verifyTrainingAttendance, deleteTrainingAttendance, updateTrainingSession, deleteTrainingSession, toggleTrainingSessionStatus } = useApp();
-	const [activeTab, setActiveTab] = (0, import_react.useState)("DASHBOARD");
+	const [activeTab, setActiveTab] = (0, import_react.useState)(initialTab || "DASHBOARD");
+	import_react.useEffect(() => {
+		if (initialTab) setActiveTab(initialTab);
+	}, [initialTab]);
 	const [search, setSearch] = (0, import_react.useState)("");
 	const [isPlanModalOpen, setIsPlanModalOpen] = (0, import_react.useState)(false);
 	const [isAttendanceModalOpen, setIsAttendanceModalOpen] = (0, import_react.useState)(false);
@@ -81856,10 +82284,1503 @@ var LeavePrintReportModal = ({ isOpen, onClose, year, reports, departments, dept
 	}), document.body);
 };
 //#endregion
+//#region src/modules/leave/LeaveTakenReportView.tsx
+var MONTH_NAMES_ID = [
+	"Januari",
+	"Februari",
+	"Maret",
+	"April",
+	"Mei",
+	"Juni",
+	"Juli",
+	"Agustus",
+	"September",
+	"Oktober",
+	"November",
+	"Desember"
+];
+var LEAVE_TYPE_META = {
+	ANNUAL_LEAVE: {
+		label: "Cuti Tahunan (AL)",
+		short: "Cuti Tahunan",
+		code: "AL",
+		badge: "bg-emerald-100 text-emerald-800 border-emerald-300",
+		category: "ANNUAL"
+	},
+	PENDING_OFF: {
+		label: "Pending Off (PO)",
+		short: "Pending Off",
+		code: "PO",
+		badge: "bg-amber-100 text-amber-900 border-amber-300",
+		category: "COMPENSATION"
+	},
+	EXTRA_OFF: {
+		label: "Extra Off (EO)",
+		short: "Extra Off",
+		code: "EO",
+		badge: "bg-orange-100 text-orange-800 border-orange-300",
+		category: "COMPENSATION"
+	},
+	PUBLIC_HOLIDAY_COMPENSATORY: {
+		label: "Public Holiday (PH / PHC)",
+		short: "Public Holiday (PH)",
+		code: "PH",
+		badge: "bg-teal-100 text-teal-900 border-teal-300",
+		category: "COMPENSATION"
+	},
+	CHANGE_OFF: {
+		label: "Tukar Libur (Change Off)",
+		short: "Change Off",
+		code: "CO",
+		badge: "bg-cyan-100 text-cyan-800 border-cyan-300",
+		category: "COMPENSATION"
+	},
+	SICK_LEAVE: {
+		label: "Cuti Sakit (Sick Leave)",
+		short: "Sakit",
+		code: "SL",
+		badge: "bg-rose-100 text-rose-800 border-rose-300",
+		category: "OTHER"
+	},
+	SPECIAL_LEAVE: {
+		label: "Cuti Khusus / Izin Resmi",
+		short: "Cuti Khusus",
+		code: "SP",
+		badge: "bg-purple-100 text-purple-800 border-purple-300",
+		category: "OTHER"
+	},
+	UNPAID_LEAVE: {
+		label: "Cuti Tidak Dibayar (Unpaid)",
+		short: "Unpaid",
+		code: "UL",
+		badge: "bg-slate-200 text-slate-800 border-slate-300",
+		category: "OTHER"
+	}
+};
+function parseUtcDate(dateStr) {
+	if (!dateStr) return null;
+	const parts = String(dateStr).slice(0, 10).split("-").map(Number);
+	if (parts.length !== 3 || parts.some(isNaN)) return null;
+	return Date.UTC(parts[0], parts[1] - 1, parts[2]);
+}
+function formatDateId(dateStr) {
+	if (!dateStr) return "-";
+	const clean = String(dateStr).slice(0, 10);
+	const ts = parseUtcDate(clean);
+	if (ts === null) return clean;
+	return new Date(ts).toLocaleDateString("id-ID", {
+		day: "2-digit",
+		month: "short",
+		year: "numeric",
+		timeZone: "UTC"
+	});
+}
+function getLastDayOfMonth(year, month1Based) {
+	const lastDay = new Date(Date.UTC(year, month1Based, 0)).getUTCDate();
+	return `${year}-${String(month1Based).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+}
+function computeOverlapDays(startStr, endStr, totalDays, periodStartStr, periodEndStr) {
+	const s = parseUtcDate(startStr);
+	const e = parseUtcDate(endStr || startStr);
+	const ps = parseUtcDate(periodStartStr);
+	const pe = parseUtcDate(periodEndStr);
+	if (s === null || e === null || ps === null || pe === null) return 0;
+	const actualStart = Math.min(s, e);
+	const actualEnd = Math.max(s, e);
+	if (actualEnd < ps || actualStart > pe) return 0;
+	if (actualStart >= ps && actualEnd <= pe) return totalDays;
+	const overlapCalendarDays = Math.floor((Math.min(actualEnd, pe) - Math.max(actualStart, ps)) / 864e5) + 1;
+	const fullSpanCalendarDays = Math.floor((actualEnd - actualStart) / 864e5) + 1;
+	if (fullSpanCalendarDays <= 0) return 0;
+	const ratio = overlapCalendarDays / fullSpanCalendarDays;
+	const scaled = Math.round(totalDays * ratio * 2) / 2;
+	return Math.max(0, Math.min(totalDays, scaled));
+}
+function extractDateRangeFromText(text) {
+	if (!text) return {};
+	const matches = text.match(/\b20\d{2}-\d{2}-\d{2}\b/g);
+	if (matches && matches.length >= 2) return {
+		start: matches[0],
+		end: matches[1]
+	};
+	if (matches && matches.length === 1) return {
+		start: matches[0],
+		end: matches[0]
+	};
+	return {};
+}
+var LeaveTakenReportView = ({ effectiveDeptId, onSelectEmployeeForLedger }) => {
+	const { currentUser, employees, departments, leaveApplications, leaveLedger, systemDate } = useApp();
+	const [deptFilter, setDeptFilter] = (0, import_react.useState)(effectiveDeptId || "ALL");
+	const activeDeptId = currentUser.role === "DEPT_HEAD" && currentUser.departmentId ? currentUser.departmentId : deptFilter;
+	const todayIso = (0, import_react.useMemo)(() => {
+		const now = /* @__PURE__ */ new Date();
+		const fallback = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+		return systemDate ? String(systemDate).slice(0, 10) : fallback;
+	}, [systemDate]);
+	const currentCalYear = Number(todayIso.slice(0, 4)) || (/* @__PURE__ */ new Date()).getFullYear();
+	const currentCalMonth = Number(todayIso.slice(5, 7)) || (/* @__PURE__ */ new Date()).getMonth() + 1;
+	const [periodMode, setPeriodMode] = (0, import_react.useState)("MTD");
+	const [selectedYear, setSelectedYear] = (0, import_react.useState)(currentCalYear);
+	const [selectedMonth, setSelectedMonth] = (0, import_react.useState)(currentCalMonth);
+	const [mtdEndDate, setMtdEndDate] = (0, import_react.useState)(todayIso);
+	const [leaveTypeFilter, setLeaveTypeFilter] = (0, import_react.useState)("ALL");
+	const [searchQuery, setSearchQuery] = (0, import_react.useState)("");
+	const [subView, setSubView] = (0, import_react.useState)("DETAILED_LEDGER");
+	const availableYears = (0, import_react.useMemo)(() => {
+		const yrs = /* @__PURE__ */ new Set([
+			2024,
+			2025,
+			2026,
+			currentCalYear
+		]);
+		leaveApplications.forEach((a) => {
+			const y = Number(String(a.startDate || "").slice(0, 4));
+			if (y >= 2020 && y <= 2035) yrs.add(y);
+		});
+		leaveLedger.forEach((l) => {
+			const y = Number(String(l.effectiveDate || "").slice(0, 4));
+			if (y >= 2020 && y <= 2035) yrs.add(y);
+		});
+		return Array.from(yrs).sort((a, b) => a - b);
+	}, [
+		leaveApplications,
+		leaveLedger,
+		currentCalYear
+	]);
+	const { periodStart, periodEnd, periodLabel } = (0, import_react.useMemo)(() => {
+		const mm = String(selectedMonth).padStart(2, "0");
+		const monthName = MONTH_NAMES_ID[selectedMonth - 1] || "";
+		if (periodMode === "MONTH") {
+			const start = `${selectedYear}-${mm}-01`;
+			const end = getLastDayOfMonth(selectedYear, selectedMonth);
+			return {
+				periodStart: start,
+				periodEnd: end,
+				periodLabel: `Bulan ${monthName} ${selectedYear} (${formatDateId(start)} s/d ${formatDateId(end)})`
+			};
+		}
+		if (periodMode === "MTD") {
+			const start = `${selectedYear}-${mm}-01`;
+			const monthLast = getLastDayOfMonth(selectedYear, selectedMonth);
+			const defaultEnd = selectedYear === currentCalYear && selectedMonth === currentCalMonth ? todayIso : monthLast;
+			let end = mtdEndDate && mtdEndDate.startsWith(`${selectedYear}-${mm}`) ? mtdEndDate : defaultEnd;
+			if (end < start) end = start;
+			if (end > monthLast) end = monthLast;
+			return {
+				periodStart: start,
+				periodEnd: end,
+				periodLabel: `MTD ${monthName} ${selectedYear} (${formatDateId(start)} s/d ${formatDateId(end)})`
+			};
+		}
+		const start = `${selectedYear}-01-01`;
+		const end = `${selectedYear}-12-31`;
+		return {
+			periodStart: start,
+			periodEnd: end,
+			periodLabel: `Tahun ${selectedYear} (${formatDateId(start)} s/d ${formatDateId(end)})`
+		};
+	}, [
+		periodMode,
+		selectedYear,
+		selectedMonth,
+		mtdEndDate,
+		currentCalYear,
+		currentCalMonth,
+		todayIso
+	]);
+	const handleModeChange = (mode) => {
+		setPeriodMode(mode);
+		if (mode === "MTD") {
+			setSelectedYear(currentCalYear);
+			setSelectedMonth(currentCalMonth);
+			setMtdEndDate(todayIso);
+		}
+	};
+	const handleMonthYearForMtd = (newYear, newMonth) => {
+		setSelectedYear(newYear);
+		setSelectedMonth(newMonth);
+		if (newYear === currentCalYear && newMonth === currentCalMonth) setMtdEndDate(todayIso);
+		else setMtdEndDate(getLastDayOfMonth(newYear, newMonth));
+	};
+	const getCreditsForEmployeeAndType = (employeeId, leaveType, beforeOrOnDate) => {
+		return leaveLedger.filter((l) => {
+			if (l.employeeId !== employeeId) return false;
+			if (l.leaveType !== leaveType) return false;
+			if (l.days <= 0) return false;
+			if (beforeOrOnDate && l.effectiveDate && l.effectiveDate.slice(0, 10) > beforeOrOnDate) return false;
+			return true;
+		}).sort((a, b) => String(b.effectiveDate || "").localeCompare(String(a.effectiveDate || ""))).map((l) => ({
+			id: l.id,
+			effectiveDate: String(l.effectiveDate || "").slice(0, 10),
+			expiryDate: l.expiryDate ? String(l.expiryDate).slice(0, 10) : void 0,
+			days: l.days,
+			reason: l.reason || "-",
+			referenceDocNumber: l.referenceDocNumber,
+			authorizedByName: l.authorizedByName
+		}));
+	};
+	const buildPeriodAndOriginMeta = (employeeId, leaveType, takenStartDate, app, ledgerEntry) => {
+		const details = [];
+		if (leaveType === "ANNUAL_LEAVE") {
+			if (app?.quotaDeductionBreakdown && app.quotaDeductionBreakdown.length > 0) {
+				const title = app.quotaDeductionBreakdown.map((b) => `${b.yearLabel || `Cuti Tahun ${b.year}`} (${b.daysDeducted} hr)`).join(" + ");
+				app.quotaDeductionBreakdown.forEach((b) => {
+					details.push(`${b.yearLabel || `Hak Cuti ${b.year}`}: ${b.daysDeducted} hr (Sisa setelah potong: ${b.balanceAfter} hr)`);
+				});
+				return {
+					title,
+					details
+				};
+			}
+			if (app?.targetQuotaYear) return {
+				title: `Periode Hak Cuti Tahun ${app.targetQuotaYear}`,
+				details: [`Dialokasikan ke Kuota AL Tahun ${app.targetQuotaYear}`]
+			};
+			const yr = (ledgerEntry?.reason?.match(/Cuti Tahun\s*(20\d{2})/i) || ledgerEntry?.reason?.match(/Tahun\s*(20\d{2})/i))?.[1] || takenStartDate.slice(0, 4);
+			const alCredits = getCreditsForEmployeeAndType(employeeId, "ANNUAL_LEAVE", `${yr}-12-31`);
+			const matchedCredit = alCredits.find((c) => c.effectiveDate.startsWith(yr)) || alCredits[0];
+			if (matchedCredit) details.push(`Sumber Ledger: ${matchedCredit.reason} (${formatDateId(matchedCredit.effectiveDate)})`);
+			return {
+				title: `Periode AL Tahun ${yr}`,
+				details
+			};
+		}
+		if (leaveType === "PENDING_OFF") {
+			const poCredits = getCreditsForEmployeeAndType(employeeId, "PENDING_OFF", takenStartDate);
+			if (poCredits.length > 0) {
+				const latestPo = poCredits[0];
+				poCredits.slice(0, 3).forEach((po) => {
+					details.push(`Hak PO Tgl ${formatDateId(po.effectiveDate)} (+${po.days} hr): ${po.reason}${po.expiryDate ? ` · Exp ${formatDateId(po.expiryDate)}` : ""}`);
+				});
+				return {
+					title: `PO Tgl ${formatDateId(latestPo.effectiveDate)} — ${latestPo.reason}`,
+					details
+				};
+			}
+			return {
+				title: `Pending Off (Diambil ${formatDateId(takenStartDate)})`,
+				details: ["Kredit PO belum tercatat terpisah di ledger"]
+			};
+		}
+		if (leaveType === "PUBLIC_HOLIDAY_COMPENSATORY") {
+			const phCredits = getCreditsForEmployeeAndType(employeeId, "PUBLIC_HOLIDAY_COMPENSATORY", takenStartDate);
+			if (phCredits.length > 0) {
+				const latestPh = phCredits[0];
+				phCredits.slice(0, 3).forEach((ph) => {
+					details.push(`Hak PH Tgl ${formatDateId(ph.effectiveDate)} (+${ph.days} hr): ${ph.reason}${ph.expiryDate ? ` · Exp ${formatDateId(ph.expiryDate)}` : ""}`);
+				});
+				return {
+					title: `PH Tgl ${formatDateId(latestPh.effectiveDate)} — ${latestPh.reason}`,
+					details
+				};
+			}
+			return {
+				title: `Public Holiday (Diambil ${formatDateId(takenStartDate)})`,
+				details: ["Kredit PH belum tercatat terpisah di ledger"]
+			};
+		}
+		if (leaveType === "EXTRA_OFF") {
+			const eoCredits = getCreditsForEmployeeAndType(employeeId, "EXTRA_OFF", takenStartDate);
+			if (eoCredits.length > 0) {
+				const latestEo = eoCredits[0];
+				eoCredits.slice(0, 3).forEach((eo) => {
+					details.push(`Hak EO Tgl ${formatDateId(eo.effectiveDate)} (+${eo.days} hr): ${eo.reason}`);
+				});
+				return {
+					title: `EO Tgl ${formatDateId(latestEo.effectiveDate)} — ${latestEo.reason}`,
+					details
+				};
+			}
+			return {
+				title: `Extra Off (${takenStartDate.slice(0, 4)})`,
+				details: []
+			};
+		}
+		return {
+			title: `${LEAVE_TYPE_META[leaveType]?.short || leaveType} — Periode ${MONTH_NAMES_ID[Number(takenStartDate.slice(5, 7)) - 1] || ""} ${takenStartDate.slice(0, 4)}`,
+			details: []
+		};
+	};
+	const detailedTakenRecords = (0, import_react.useMemo)(() => {
+		const items = [];
+		const appMap = /* @__PURE__ */ new Map();
+		leaveApplications.forEach((a) => appMap.set(a.id, a));
+		const coveredAppIds = /* @__PURE__ */ new Set();
+		leaveLedger.forEach((entry) => {
+			if (entry.days >= 0) return;
+			if (entry.transactionType === "EXPIRY_DEDUCTION" || entry.transactionType === "REVERSAL_ADJUSTMENT") return;
+			const linkedApp = entry.relatedApplicationId ? appMap.get(entry.relatedApplicationId) : void 0;
+			if (linkedApp && linkedApp.status === "APPROVED") coveredAppIds.add(linkedApp.id);
+			const emp = employees.find((e) => e.id === entry.employeeId);
+			const deptId = emp?.departmentId || linkedApp?.departmentId || "";
+			if (activeDeptId !== "ALL" && deptId !== activeDeptId) return;
+			if (leaveTypeFilter !== "ALL" && entry.leaveType !== leaveTypeFilter) return;
+			const parsedFromReason = extractDateRangeFromText(entry.reason);
+			const startDate = String(linkedApp?.startDate || parsedFromReason.start || entry.effectiveDate || "").slice(0, 10);
+			const endDate = String(linkedApp?.endDate || parsedFromReason.end || startDate).slice(0, 10);
+			const ledgerTotalDays = Math.abs(entry.days);
+			const daysInPeriod = computeOverlapDays(startDate, endDate, ledgerTotalDays, periodStart, periodEnd);
+			if (daysInPeriod <= 0) return;
+			const deptName = departments.find((d) => d.id === deptId)?.name || linkedApp?.departmentName || deptId || "-";
+			const originMeta = buildPeriodAndOriginMeta(entry.employeeId, entry.leaveType, startDate, linkedApp, entry);
+			const displayReason = linkedApp?.reason ? entry.reason && !entry.reason.startsWith("Final GM Approval") ? `${linkedApp.reason} (${entry.reason})` : linkedApp.reason : entry.reason || "-";
+			items.push({
+				id: `LED-${entry.id}`,
+				ledgerId: entry.id,
+				applicationId: linkedApp?.id,
+				source: linkedApp ? "LEDGER_AND_APP" : "LEDGER_MANUAL",
+				referenceNo: entry.referenceDocNumber || linkedApp?.id || entry.id,
+				transactionTypeLabel: entry.transactionType === "APPROVED_LEAVE_DEDUCTION" ? "Pengambilan Cuti (Ledger Debit)" : "Penyesuaian / Pemotongan Ledger",
+				employeeId: entry.employeeId,
+				employeeName: emp?.fullName || linkedApp?.employeeName || entry.employeeId,
+				employeeNumber: emp?.employeeNumber || entry.employeeId,
+				departmentId: deptId,
+				departmentName: deptName,
+				jobTitle: emp?.jobTitle || linkedApp?.position || "-",
+				leaveType: entry.leaveType,
+				startDate,
+				endDate,
+				daysTaken: daysInPeriod,
+				originalTotalDays: ledgerTotalDays,
+				periodOrOriginTitle: originMeta.title,
+				periodOrOriginDetails: originMeta.details,
+				reason: displayReason,
+				authorizedByName: entry.authorizedByName || "System / GM"
+			});
+		});
+		leaveApplications.forEach((app) => {
+			if (app.status !== "APPROVED") return;
+			if (coveredAppIds.has(app.id)) return;
+			const emp = employees.find((e) => e.id === app.employeeId);
+			const deptId = emp?.departmentId || app.departmentId || "";
+			if (activeDeptId !== "ALL" && deptId !== activeDeptId) return;
+			if (leaveTypeFilter !== "ALL" && app.leaveType !== leaveTypeFilter) return;
+			const daysInPeriod = computeOverlapDays(app.startDate, app.endDate || app.startDate, app.totalDays || 0, periodStart, periodEnd);
+			if (daysInPeriod <= 0) return;
+			const deptName = departments.find((d) => d.id === deptId)?.name || app.departmentName || deptId || "-";
+			const originMeta = buildPeriodAndOriginMeta(app.employeeId, app.leaveType, app.startDate, app, void 0);
+			const gmApprover = app.approvalHistory?.slice().reverse().find((h) => h.action === "APPROVE");
+			items.push({
+				id: `APP-${app.id}`,
+				applicationId: app.id,
+				source: "APP_NON_DEDUCTING",
+				referenceNo: app.id,
+				transactionTypeLabel: "Pengajuan Approved (Non-Potong Kuota / Historis)",
+				employeeId: app.employeeId,
+				employeeName: emp?.fullName || app.employeeName || app.employeeId,
+				employeeNumber: emp?.employeeNumber || app.employeeId,
+				departmentId: deptId,
+				departmentName: deptName,
+				jobTitle: emp?.jobTitle || app.position || "-",
+				leaveType: app.leaveType,
+				startDate: String(app.startDate).slice(0, 10),
+				endDate: String(app.endDate || app.startDate).slice(0, 10),
+				daysTaken: daysInPeriod,
+				originalTotalDays: app.totalDays || 0,
+				periodOrOriginTitle: originMeta.title,
+				periodOrOriginDetails: originMeta.details,
+				reason: app.reason || "-",
+				authorizedByName: gmApprover?.actorName || "General Manager"
+			});
+		});
+		const q = searchQuery.trim().toLowerCase();
+		return (q ? items.filter((r) => r.employeeName.toLowerCase().includes(q) || r.employeeNumber.toLowerCase().includes(q) || r.departmentName.toLowerCase().includes(q) || r.referenceNo.toLowerCase().includes(q) || (r.ledgerId || "").toLowerCase().includes(q) || r.periodOrOriginTitle.toLowerCase().includes(q) || r.reason.toLowerCase().includes(q)) : items).sort((a, b) => b.startDate.localeCompare(a.startDate));
+	}, [
+		leaveLedger,
+		leaveApplications,
+		employees,
+		departments,
+		activeDeptId,
+		leaveTypeFilter,
+		periodStart,
+		periodEnd,
+		searchQuery
+	]);
+	const compensationCreditsInPeriod = (0, import_react.useMemo)(() => {
+		const q = searchQuery.trim().toLowerCase();
+		return leaveLedger.filter((entry) => {
+			if (entry.days <= 0) return false;
+			if (entry.leaveType !== "PENDING_OFF" && entry.leaveType !== "PUBLIC_HOLIDAY_COMPENSATORY" && entry.leaveType !== "EXTRA_OFF") return false;
+			if (leaveTypeFilter !== "ALL" && entry.leaveType !== leaveTypeFilter) return false;
+			const effDate = String(entry.effectiveDate || "").slice(0, 10);
+			if (!effDate || effDate < periodStart || effDate > periodEnd) return false;
+			const emp = employees.find((e) => e.id === entry.employeeId);
+			const deptId = emp?.departmentId || "";
+			if (activeDeptId !== "ALL" && deptId !== activeDeptId) return false;
+			if (q) {
+				const deptName = departments.find((d) => d.id === deptId)?.name || "";
+				if (!((emp?.fullName || "").toLowerCase().includes(q) || (emp?.employeeNumber || "").toLowerCase().includes(q) || deptName.toLowerCase().includes(q) || (entry.reason || "").toLowerCase().includes(q) || entry.id.toLowerCase().includes(q))) return false;
+			}
+			return true;
+		}).sort((a, b) => String(b.effectiveDate || "").localeCompare(String(a.effectiveDate || ""))).map((entry) => {
+			const emp = employees.find((e) => e.id === entry.employeeId);
+			const deptName = departments.find((d) => d.id === emp?.departmentId)?.name || emp?.departmentId || "-";
+			const takenDatesSummary = leaveLedger.filter((d) => d.employeeId === entry.employeeId && d.leaveType === entry.leaveType && d.days < 0 && d.transactionType !== "EXPIRY_DEDUCTION" && String(d.effectiveDate || "").slice(0, 10) >= String(entry.effectiveDate || "").slice(0, 10)).map((d) => {
+				const linked = d.relatedApplicationId ? leaveApplications.find((a) => a.id === d.relatedApplicationId) : void 0;
+				if (linked) return `Diambil ${formatDateId(linked.startDate)}${linked.endDate !== linked.startDate ? ` s/d ${formatDateId(linked.endDate)}` : ""} (${Math.abs(d.days)} hr)`;
+				return `Diambil ${formatDateId(d.effectiveDate)} (${Math.abs(d.days)} hr)`;
+			});
+			return {
+				entry,
+				employeeName: emp?.fullName || entry.employeeId,
+				employeeNumber: emp?.employeeNumber || entry.employeeId,
+				departmentName: deptName,
+				jobTitle: emp?.jobTitle || "-",
+				takenDatesSummary
+			};
+		});
+	}, [
+		leaveLedger,
+		leaveApplications,
+		employees,
+		departments,
+		activeDeptId,
+		leaveTypeFilter,
+		periodStart,
+		periodEnd,
+		searchQuery
+	]);
+	const employeeSummaryRows = (0, import_react.useMemo)(() => {
+		return employees.filter((emp) => {
+			if (activeDeptId !== "ALL" && emp.departmentId !== activeDeptId) return false;
+			return detailedTakenRecords.some((r) => r.employeeId === emp.id);
+		}).map((emp) => {
+			const empRecords = detailedTakenRecords.filter((r) => r.employeeId === emp.id);
+			const deptName = departments.find((d) => d.id === emp.departmentId)?.name || emp.departmentId;
+			const byType = {
+				ANNUAL_LEAVE: 0,
+				PENDING_OFF: 0,
+				EXTRA_OFF: 0,
+				PUBLIC_HOLIDAY_COMPENSATORY: 0,
+				CHANGE_OFF: 0,
+				SICK_LEAVE: 0,
+				SPECIAL_LEAVE: 0,
+				UNPAID_LEAVE: 0
+			};
+			empRecords.forEach((r) => {
+				byType[r.leaveType] = (byType[r.leaveType] || 0) + r.daysTaken;
+			});
+			return {
+				employee: emp,
+				deptName,
+				byType,
+				grandTotalDays: Object.values(byType).reduce((s, v) => s + v, 0),
+				records: empRecords
+			};
+		}).sort((a, b) => b.grandTotalDays - a.grandTotalDays || a.employee.fullName.localeCompare(b.employee.fullName));
+	}, [
+		employees,
+		departments,
+		activeDeptId,
+		detailedTakenRecords
+	]);
+	const kpiTotals = (0, import_react.useMemo)(() => {
+		let totalDays = 0;
+		let annualDays = 0;
+		let compDays = 0;
+		let otherDays = 0;
+		const uniqueEmployees = /* @__PURE__ */ new Set();
+		detailedTakenRecords.forEach((r) => {
+			totalDays += r.daysTaken;
+			uniqueEmployees.add(r.employeeId);
+			const meta = LEAVE_TYPE_META[r.leaveType];
+			if (meta.category === "ANNUAL") annualDays += r.daysTaken;
+			else if (meta.category === "COMPENSATION") compDays += r.daysTaken;
+			else otherDays += r.daysTaken;
+		});
+		return {
+			totalDays,
+			annualDays,
+			compDays,
+			otherDays,
+			employeeCount: uniqueEmployees.size,
+			transactionCount: detailedTakenRecords.length
+		};
+	}, [detailedTakenRecords]);
+	const handleExportCSV = () => {
+		const headers = [
+			"No",
+			"ID Transaksi Ledger",
+			"No Pengajuan / Referensi",
+			"NIK",
+			"Nama Karyawan",
+			"Departemen",
+			"Jabatan",
+			"Jenis Cuti / Libur",
+			"Nama Periode / Detail Hak Asal (AL / PO / PH)",
+			"Detail Kredit Terkait (Kapan PO / PH Didapat)",
+			"Dari Tanggal",
+			"Sampai Tanggal",
+			"Hari Diambil (Dalam Periode)",
+			"Alasan / Keterangan Ledger",
+			"Disahkan / Diinput Oleh",
+			"Periode Filter Laporan"
+		];
+		const rows = detailedTakenRecords.map((rec, idx) => [
+			idx + 1,
+			`"${rec.ledgerId || "-"}"`,
+			`"${rec.referenceNo}"`,
+			`"${rec.employeeNumber}"`,
+			`"${rec.employeeName}"`,
+			`"${rec.departmentName}"`,
+			`"${rec.jobTitle}"`,
+			`"${LEAVE_TYPE_META[rec.leaveType]?.label || rec.leaveType}"`,
+			`"${rec.periodOrOriginTitle.replace(/"/g, "\"\"")}"`,
+			`"${rec.periodOrOriginDetails.join(" | ").replace(/"/g, "\"\"")}"`,
+			rec.startDate,
+			rec.endDate,
+			rec.daysTaken,
+			`"${(rec.reason || "").replace(/"/g, "\"\"")}"`,
+			`"${rec.authorizedByName}"`,
+			`"${periodLabel}"`
+		].join(","));
+		const csvContent = "data:text/csv;charset=utf-8,﻿" + [headers.join(","), ...rows].join("\n");
+		const link = document.createElement("a");
+		link.setAttribute("href", encodeURI(csvContent));
+		link.setAttribute("download", `GMCC_Detail_Ledger_Pengambilan_Cuti_${periodMode}_${selectedYear}.csv`);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-5",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4 print:border-none print:shadow-none print:p-0",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-col lg:flex-row lg:items-center justify-between gap-4",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
+						className: "text-base font-bold text-slate-900 flex items-center gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BookOpen, { className: "w-5 h-5 text-emerald-700" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Laporan Detail Pengambilan Cuti, Pending Off (PO) & Public Holiday (PH) — Sesuai Buku Ledger" })]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-xs text-slate-500 mt-0.5",
+						children: "Menampilkan rincian transaksi aktual dari Ledger: nama periode cuti (AL), kapan Pending Off (PO) & Public Holiday (PH) didapat dan berlaku, serta rentang tanggal pengambilan (dari tanggal s/d sampai tanggal)."
+					})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-2 print:hidden",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							onClick: handleExportCSV,
+							className: "inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-xs cursor-pointer transition-colors",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "w-3.5 h-3.5 text-emerald-700" }), "Export Detail CSV"]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							onClick: () => window.print(),
+							className: "inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs cursor-pointer transition-colors",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Printer, { className: "w-3.5 h-3.5 text-emerald-400" }), "Cetak Detail Laporan"]
+						})]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 print:hidden",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "inline-flex rounded-lg border border-slate-300 bg-slate-50 p-0.5",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => handleModeChange("MONTH"),
+									className: `px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${periodMode === "MONTH" ? "bg-emerald-800 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"}`,
+									children: "Per Bulan"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => handleModeChange("MTD"),
+									className: `px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${periodMode === "MTD" ? "bg-emerald-800 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"}`,
+									children: "MTD (Month-to-Date)"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => handleModeChange("YEAR"),
+									className: `px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${periodMode === "YEAR" ? "bg-emerald-800 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"}`,
+									children: "Per Tahun"
+								})
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarDays, { className: "w-3.5 h-3.5 text-emerald-700" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-slate-500 font-medium",
+									children: "Tahun:"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", {
+									value: selectedYear,
+									onChange: (e) => {
+										const yr = Number(e.target.value);
+										if (periodMode === "MTD") handleMonthYearForMtd(yr, selectedMonth);
+										else setSelectedYear(yr);
+									},
+									className: "font-bold text-slate-900 bg-transparent outline-none cursor-pointer",
+									children: availableYears.map((yr) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: yr,
+										children: yr
+									}, yr))
+								})
+							]
+						}),
+						(periodMode === "MONTH" || periodMode === "MTD") && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calendar, { className: "w-3.5 h-3.5 text-emerald-700" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-slate-500 font-medium",
+									children: "Bulan:"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", {
+									value: selectedMonth,
+									onChange: (e) => {
+										const m = Number(e.target.value);
+										if (periodMode === "MTD") handleMonthYearForMtd(selectedYear, m);
+										else setSelectedMonth(m);
+									},
+									className: "font-bold text-slate-900 bg-transparent outline-none cursor-pointer",
+									children: MONTH_NAMES_ID.map((name, idx) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: idx + 1,
+										children: name
+									}, name))
+								})
+							]
+						}),
+						periodMode === "MTD" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 rounded-lg px-2.5 py-1 text-xs",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "w-3.5 h-3.5 text-emerald-700" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-emerald-900 font-semibold",
+									children: "s/d Tanggal:"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "date",
+									value: periodEnd,
+									min: periodStart,
+									max: getLastDayOfMonth(selectedYear, selectedMonth),
+									onChange: (e) => setMtdEndDate(e.target.value),
+									className: "bg-transparent font-mono font-bold text-emerald-950 outline-none text-xs"
+								})
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-700",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-3.5 h-3.5 text-emerald-700" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: periodLabel })]
+						})
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "hidden print:block border-b-2 border-slate-800 pb-3 mb-4",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "text-lg font-bold text-slate-900",
+					children: "GMCC — Laporan Detail Pengambilan Cuti, PO & PH (Sesuai Ledger)"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					className: "text-xs text-slate-600 mt-0.5",
+					children: [
+						"Periode: ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: periodLabel }),
+						" · Dicetak pada ",
+						(/* @__PURE__ */ new Date()).toLocaleDateString("id-ID", { dateStyle: "long" }),
+						" oleh ",
+						currentUser.name
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "bg-white rounded-xl border border-slate-200 p-4 shadow-xs",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs text-slate-500 mb-1.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "font-semibold uppercase tracking-wider text-slate-700",
+									children: "Total Hari Diambil"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "w-4 h-4 text-slate-600" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "text-2xl font-bold text-slate-900 font-mono",
+								children: [
+									kpiTotals.totalDays,
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-sans font-normal text-slate-500",
+										children: "hari"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "text-[11px] text-slate-500 mt-1",
+								children: [
+									kpiTotals.transactionCount,
+									" transaksi detail · ",
+									kpiTotals.employeeCount,
+									" karyawan"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "bg-emerald-50/70 rounded-xl border border-emerald-200 p-4 shadow-xs",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs text-emerald-800 mb-1.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "font-semibold uppercase tracking-wider",
+									children: "Cuti Tahunan (AL)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Umbrella, { className: "w-4 h-4 text-emerald-700" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "text-2xl font-bold text-emerald-950 font-mono",
+								children: [
+									kpiTotals.annualDays,
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-sans font-normal text-emerald-700",
+										children: "hari"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "text-[11px] text-emerald-700 mt-1",
+								children: "Pengambilan hak Annual Leave"
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "bg-amber-50/70 rounded-xl border border-amber-200 p-4 shadow-xs",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs text-amber-800 mb-1.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "font-semibold uppercase tracking-wider",
+									children: "PO / EO / PH / Change Off"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "w-4 h-4 text-amber-700" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "text-2xl font-bold text-amber-950 font-mono",
+								children: [
+									kpiTotals.compDays,
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-sans font-normal text-amber-700",
+										children: "hari"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "text-[11px] text-amber-800 mt-1",
+								children: "Pending Off, Extra Off & Public Holiday"
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "bg-purple-50/70 rounded-xl border border-purple-200 p-4 shadow-xs",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs text-purple-800 mb-1.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "font-semibold uppercase tracking-wider",
+									children: "Sakit, Khusus & Unpaid"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Stethoscope, { className: "w-4 h-4 text-purple-700" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "text-2xl font-bold text-purple-950 font-mono",
+								children: [
+									kpiTotals.otherDays,
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-sans font-normal text-purple-700",
+										children: "hari"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "text-[11px] text-purple-700 mt-1",
+								children: "Sick, Special & Unpaid Leave"
+							})
+						]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-3 print:hidden",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 self-start",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => setSubView("DETAILED_LEDGER"),
+						className: `inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-md cursor-pointer transition-all ${subView === "DETAILED_LEDGER" ? "bg-emerald-800 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"}`,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ListChecks, { className: "w-3.5 h-3.5" }),
+							"Detail Transaksi Sesuai Ledger (",
+							detailedTakenRecords.length,
+							")"
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => setSubView("SUMMARY_BY_EMPLOYEE"),
+						className: `inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-md cursor-pointer transition-all ${subView === "SUMMARY_BY_EMPLOYEE" ? "bg-emerald-800 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"}`,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, { className: "w-3.5 h-3.5" }),
+							"Ringkasan per Karyawan (",
+							employeeSummaryRows.length,
+							")"
+						]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center gap-2.5",
+					children: [
+						currentUser.role !== "DEPT_HEAD" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Building2, { className: "w-3.5 h-3.5 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+								value: deptFilter,
+								onChange: (e) => setDeptFilter(e.target.value),
+								className: "bg-transparent text-slate-800 font-medium outline-none cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "ALL",
+									children: "Semua Departemen"
+								}), departments.map((d) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: d.id,
+									children: d.name
+								}, d.id))]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Funnel, { className: "w-3.5 h-3.5 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+								value: leaveTypeFilter,
+								onChange: (e) => setLeaveTypeFilter(e.target.value),
+								className: "bg-transparent text-slate-800 font-medium outline-none cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "ALL",
+									children: "Semua Jenis (AL / PO / PH / Lainnya)"
+								}), Object.keys(LEAVE_TYPE_META).map((lt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: lt,
+									children: LEAVE_TYPE_META[lt].label
+								}, lt))]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "relative w-full sm:w-64",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								placeholder: "Cari nama, NIK, PO/PH, periode...",
+								value: searchQuery,
+								onChange: (e) => setSearchQuery(e.target.value),
+								className: "w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-hidden focus:border-emerald-600"
+							})]
+						})
+					]
+				})]
+			}),
+			subView === "DETAILED_LEDGER" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-5",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "text-xs font-bold text-slate-800 flex items-center gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ListChecks, { className: "w-4 h-4 text-emerald-700" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Daftar Detail Pengambilan Cuti / AL / PO / PH (Sumber Buku Ledger)" })]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "text-[11px] text-slate-500 font-mono",
+							children: [detailedTakenRecords.length, " baris transaksi"]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "overflow-x-auto",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+							className: "w-full text-left border-collapse text-xs",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									className: "bg-slate-900 text-slate-100 border-b border-slate-800",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold",
+											children: "#"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold",
+											children: "Karyawan & Departemen"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold",
+											children: "Jenis & Nama Periode / Asal PO & PH"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold",
+											children: "Diambil Dari Tanggal – Sampai Tanggal"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold text-center",
+											children: "Diambil"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold",
+											children: "Keterangan & Referensi Ledger"
+										}),
+										onSelectEmployeeForLedger && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+											className: "py-3 px-3 font-semibold text-right print:hidden",
+											children: "Ledger"
+										})
+									]
+								}) }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+									className: "divide-y divide-slate-200",
+									children: detailedTakenRecords.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										colSpan: 7,
+										className: "py-10 text-center text-slate-400",
+										children: [
+											"Tidak ada transaksi pengambilan cuti, PO, PH, atau libur lainnya pada periode ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: periodLabel }),
+											"."
+										]
+									}) }) : detailedTakenRecords.map((rec, idx) => {
+										const meta = LEAVE_TYPE_META[rec.leaveType];
+										const isSameDay = rec.startDate === rec.endDate;
+										return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+											className: "hover:bg-slate-50/90 transition-colors align-top",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+													className: "py-3.5 px-3 text-slate-400 font-mono",
+													children: idx + 1
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+													className: "py-3.5 px-3 min-w-[180px]",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "font-bold text-slate-900",
+															children: rec.employeeName
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "text-[11px] text-slate-500 font-mono mt-0.5",
+															children: rec.employeeNumber
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "text-[11px] text-slate-600 flex items-center gap-1 mt-0.5",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Building2, { className: "w-3 h-3 text-slate-400 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: rec.departmentName })]
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+													className: "py-3.5 px-3 min-w-[240px] max-w-xs space-y-1.5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex items-center gap-1.5 flex-wrap",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																className: `inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${meta?.badge}`,
+																children: [
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: meta?.code }),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "·" }),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: meta?.short })
+																]
+															})
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "font-semibold text-slate-900 text-[11px] leading-snug",
+															children: rec.periodOrOriginTitle
+														}),
+														rec.periodOrOriginDetails.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "bg-slate-50 border border-slate-200 rounded-md p-2 space-y-1",
+															children: rec.periodOrOriginDetails.map((d, dIdx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "text-[10.5px] text-slate-700 leading-snug",
+																children: ["• ", d]
+															}, dIdx))
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+													className: "py-3.5 px-3 whitespace-nowrap min-w-[190px]",
+													children: isSameDay ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "font-bold text-slate-900",
+														children: formatDateId(rec.startDate)
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "text-[10px] font-mono text-slate-500 mt-0.5",
+														children: [
+															"(",
+															rec.startDate,
+															") · 1 tanggal"
+														]
+													})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "space-y-0.5",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "font-bold text-slate-900",
+															children: [
+																formatDateId(rec.startDate),
+																" ",
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																	className: "text-emerald-700 font-semibold",
+																	children: "s/d"
+																}),
+																" ",
+																formatDateId(rec.endDate)
+															]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "text-[10px] font-mono text-slate-500",
+															children: [
+																"Dari ",
+																rec.startDate,
+																" sampai ",
+																rec.endDate
+															]
+														})]
+													})
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+													className: "py-3.5 px-3 text-center whitespace-nowrap",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "inline-block px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 font-mono font-bold text-rose-800",
+														children: [
+															"-",
+															rec.daysTaken,
+															" hr"
+														]
+													}), rec.daysTaken !== rec.originalTotalDays && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "block text-[10px] text-slate-500 mt-1",
+														children: [
+															"dari total ",
+															rec.originalTotalDays,
+															" hr"
+														]
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+													className: "py-3.5 px-3 min-w-[230px] max-w-sm space-y-1",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "text-slate-800 leading-snug font-medium",
+															children: rec.reason
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500 font-mono",
+															children: [
+																rec.ledgerId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																	className: "bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 text-slate-700",
+																	children: ["Ledger: ", rec.ledgerId]
+																}),
+																rec.applicationId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																	className: "bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-emerald-800",
+																	children: ["App: ", rec.applicationId]
+																}),
+																!rec.applicationId && rec.referenceNo && rec.referenceNo !== rec.ledgerId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																	className: "bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200",
+																	children: ["Ref: ", rec.referenceNo]
+																})
+															]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "text-[10px] text-slate-500",
+															children: [
+																rec.transactionTypeLabel,
+																" · Oleh: ",
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+																	className: "text-slate-700",
+																	children: rec.authorizedByName
+																})
+															]
+														})
+													]
+												}),
+												onSelectEmployeeForLedger && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+													className: "py-3.5 px-3 text-right print:hidden",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => onSelectEmployeeForLedger(rec.employeeId),
+														className: "px-2.5 py-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded border border-emerald-200 cursor-pointer whitespace-nowrap",
+														children: "Buka Ledger"
+													})
+												})
+											]
+										}, rec.id);
+									})
+								}),
+								detailedTakenRecords.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tfoot", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									className: "bg-slate-100 border-t-2 border-slate-300 font-bold text-slate-900",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											colSpan: 4,
+											className: "py-3 px-3 text-right text-[11px] uppercase tracking-wider",
+											children: [
+												"Total Pengambilan pada Periode Ini (",
+												detailedTakenRecords.length,
+												" Transaksi):"
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "py-3 px-3 text-center font-mono text-rose-800",
+											children: [
+												"-",
+												kpiTotals.totalDays,
+												" hr"
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											colSpan: onSelectEmployeeForLedger ? 2 : 1,
+											className: "py-3 px-3 text-[11px] text-slate-600 font-normal",
+											children: [
+												"AL: ",
+												kpiTotals.annualDays,
+												" hr · PO/EO/PH/CO: ",
+												kpiTotals.compDays,
+												" hr · Sakit/Khusus/Unpaid: ",
+												kpiTotals.otherDays,
+												" hr"
+											]
+										})
+									]
+								}) })
+							]
+						})
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "bg-white rounded-xl border border-amber-200 shadow-xs overflow-hidden",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "px-4 py-3 bg-amber-50/80 border-b border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "w-4 h-4 text-amber-700 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+								className: "text-xs font-bold text-amber-950",
+								children: ["Detail Hak Kredit Pending Off (PO), Public Holiday (PH) & Extra Off (EO) — Periode ", periodLabel]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-[11px] text-amber-800",
+								children: "Menunjukkan kapan karyawan mendapatkan hak Pending Off / tugas hari libur (PH), alasan/kegiatan, masa berlaku, dan status pengambilannya."
+							})] })]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "text-[11px] font-mono font-bold bg-white px-2.5 py-1 rounded border border-amber-300 text-amber-900 shrink-0",
+							children: [compensationCreditsInPeriod.length, " Catatan Kredit PO / PH / EO"]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "overflow-x-auto",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+							className: "w-full text-left border-collapse text-xs",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "bg-amber-950 text-amber-50 border-b border-amber-900",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "#"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "Karyawan & Departemen"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "Jenis Kompensasi"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "Tanggal PO / Hari PH Didapat"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold text-center",
+										children: "Hak (+)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "Batas Berlaku (Expiry)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "Keterangan Tugas PO / Hari Libur PH"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "py-2.5 px-3 font-semibold",
+										children: "Status Pengambilan & Referensi"
+									})
+								]
+							}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+								className: "divide-y divide-amber-100",
+								children: compensationCreditsInPeriod.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+									colSpan: 8,
+									className: "py-6 text-center text-slate-400",
+									children: [
+										"Tidak ada pencatatan kredit Pending Off (PO), Public Holiday (PH), atau Extra Off baru pada rentang tanggal ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: periodLabel }),
+										"."
+									]
+								}) }) : compensationCreditsInPeriod.map((row, idx) => {
+									const e = row.entry;
+									const meta = LEAVE_TYPE_META[e.leaveType];
+									const isExpired = e.expiryDate && e.expiryDate.slice(0, 10) < todayIso;
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+										className: "hover:bg-amber-50/40 transition-colors align-top",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "py-3 px-3 text-slate-400 font-mono",
+												children: idx + 1
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+												className: "py-3 px-3",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "font-bold text-slate-900",
+													children: row.employeeName
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "text-[10.5px] text-slate-500 font-mono",
+													children: [
+														row.employeeNumber,
+														" · ",
+														row.departmentName
+													]
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "py-3 px-3",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: `inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${meta?.badge}`,
+													children: [
+														meta?.code,
+														" · ",
+														meta?.short
+													]
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+												className: "py-3 px-3 whitespace-nowrap",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "font-bold text-slate-900",
+													children: formatDateId(e.effectiveDate)
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "text-[10px] font-mono text-slate-500",
+													children: [
+														"(",
+														String(e.effectiveDate).slice(0, 10),
+														")"
+													]
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "py-3 px-3 text-center",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 font-mono font-bold",
+													children: [
+														"+",
+														e.days,
+														" hr"
+													]
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "py-3 px-3 whitespace-nowrap",
+												children: e.expiryDate ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: `inline-flex items-center gap-1 font-mono text-[11px] font-semibold ${isExpired ? "text-rose-700" : "text-slate-700"}`,
+													children: [isExpired && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "w-3 h-3 text-rose-600" }), formatDateId(e.expiryDate)]
+												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-slate-400",
+													children: "-"
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "py-3 px-3 max-w-xs text-slate-800 font-medium",
+												children: e.reason
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+												className: "py-3 px-3 space-y-1",
+												children: [row.takenDatesSummary.length > 0 ? row.takenDatesSummary.map((txt, tIdx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "text-[10.5px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium",
+													children: ["✓ ", txt]
+												}, tIdx)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: `inline-block text-[10.5px] px-2 py-0.5 rounded border font-semibold ${isExpired ? "bg-rose-50 text-rose-700 border-rose-200" : "bg-amber-50 text-amber-800 border-amber-200"}`,
+													children: isExpired ? "Kadaluarsa / Belum Diambil" : "Tersedia (Belum Diambil)"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "text-[10px] font-mono text-slate-500",
+													children: [
+														"ID: ",
+														e.id,
+														" · Oleh: ",
+														e.authorizedByName
+													]
+												})]
+											})
+										]
+									}, e.id);
+								})
+							})]
+						})
+					})]
+				})]
+			}),
+			subView === "SUMMARY_BY_EMPLOYEE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-x-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+						className: "w-full text-left border-collapse text-xs",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+							className: "bg-slate-900 text-slate-200 border-b border-slate-800",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-3 font-semibold",
+									children: "#"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-3 font-semibold",
+									children: "Karyawan / Departemen"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center bg-emerald-950/60",
+									children: "AL"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "PO"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "EO"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "PH"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "CO"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "Sakit"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "Khusus"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-2.5 font-semibold text-center",
+									children: "Unpaid"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-3 font-semibold",
+									children: "Rincian Tanggal & Periode Diambil"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-3 font-semibold text-center bg-slate-800 text-white",
+									children: "Total"
+								}),
+								onSelectEmployeeForLedger && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "py-3 px-3 font-semibold text-right print:hidden",
+									children: "Aksi"
+								})
+							]
+						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+							className: "divide-y divide-slate-100",
+							children: employeeSummaryRows.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+								colSpan: 13,
+								className: "py-10 text-center text-slate-400",
+								children: [
+									"Tidak ada data pengambilan cuti atau libur pada periode ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: periodLabel }),
+									"."
+								]
+							}) }) : employeeSummaryRows.map((row, idx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "hover:bg-slate-50/90 transition-colors align-top",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-3 text-slate-400 font-mono",
+										children: idx + 1
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										className: "py-3 px-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "font-bold text-slate-900",
+											children: row.employee.fullName
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "text-[11px] text-slate-500",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-mono",
+													children: row.employee.employeeNumber
+												}),
+												" · ",
+												row.deptName
+											]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-bold text-emerald-800 bg-emerald-50/40",
+										children: row.byType.ANNUAL_LEAVE || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-amber-800",
+										children: row.byType.PENDING_OFF || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-orange-800",
+										children: row.byType.EXTRA_OFF || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-teal-800",
+										children: row.byType.PUBLIC_HOLIDAY_COMPENSATORY || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-cyan-800",
+										children: row.byType.CHANGE_OFF || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-rose-700",
+										children: row.byType.SICK_LEAVE || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-purple-800",
+										children: row.byType.SPECIAL_LEAVE || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-2.5 text-center font-mono font-semibold text-slate-700",
+										children: row.byType.UNPAID_LEAVE || "-"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-3 space-y-1 min-w-[260px]",
+										children: row.records.map((r) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "text-[10.5px] bg-slate-50 border border-slate-200 rounded px-2 py-1",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+													className: "text-slate-900",
+													children: LEAVE_TYPE_META[r.leaveType]?.code
+												}),
+												":",
+												" ",
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "font-mono text-emerald-800",
+													children: [formatDateId(r.startDate), r.endDate !== r.startDate ? ` s/d ${formatDateId(r.endDate)}` : ""]
+												}),
+												" ",
+												"(",
+												r.daysTaken,
+												" hr) — ",
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-slate-600",
+													children: r.periodOrOriginTitle
+												})
+											]
+										}, r.id))
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										className: "py-3 px-3 text-center font-mono font-extrabold text-slate-900 bg-slate-100/70",
+										children: [row.grandTotalDays, " hr"]
+									}),
+									onSelectEmployeeForLedger && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "py-3 px-3 text-right print:hidden",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => onSelectEmployeeForLedger(row.employee.id),
+											className: "px-2.5 py-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded border border-emerald-200 cursor-pointer",
+											children: "Buku Ledger"
+										})
+									})
+								]
+							}, row.employee.id))
+						})]
+					})
+				})
+			})
+		]
+	});
+};
+//#endregion
 //#region src/modules/leave/LeaveReviewDashboard.tsx
-var LeaveReviewDashboard = () => {
+var LeaveReviewDashboard = ({ initialTab }) => {
 	const { currentUser, departments, getAnnualLeaveReviewData } = useApp();
-	const [activeViewTab, setActiveViewTab] = (0, import_react.useState)("yearly-summary");
+	const [activeViewTab, setActiveViewTab] = (0, import_react.useState)(initialTab || "yearly-summary");
+	import_react.useEffect(() => {
+		if (initialTab) setActiveViewTab(initialTab);
+	}, [initialTab]);
 	const [selectedYear, setSelectedYear] = (0, import_react.useState)(() => (/* @__PURE__ */ new Date()).getFullYear());
 	const [selectedCutOffMonth, setSelectedCutOffMonth] = (0, import_react.useState)("AUTO");
 	const [selectedDeptId, setSelectedDeptId] = (0, import_react.useState)(currentUser.role === "DEPT_HEAD" && currentUser.departmentId ? currentUser.departmentId : "ALL");
@@ -82116,42 +84037,56 @@ var LeaveReviewDashboard = () => {
 								})
 							]
 						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						activeViewTab !== "taken-report" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							onClick: activeViewTab === "multi-year-matrix" ? handleExportMultiYearCSV : handleExportCSV,
 							className: "inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-xs transition-colors",
 							title: "Download CSV Spreadsheet",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "w-3.5 h-3.5 text-emerald-700" }), "Export CSV"]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							onClick: handlePrint,
 							className: "inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Printer, { className: "w-3.5 h-3.5 text-emerald-400" }), "Cetak Laporan Resmi"]
-						})
+						})] })
 					]
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex items-center gap-2 border-b border-slate-200",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					onClick: () => setActiveViewTab("yearly-summary"),
-					className: `flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeViewTab === "yearly-summary" ? "border-emerald-700 text-emerald-800 bg-emerald-50/50 rounded-t-lg" : "border-transparent text-slate-500 hover:text-slate-800"}`,
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarDays, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-						"Review Tahunan & Total Balance AL (",
-						selectedYear,
-						")"
-					] })]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					onClick: () => setActiveViewTab("multi-year-matrix"),
-					className: `flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeViewTab === "multi-year-matrix" ? "border-emerald-700 text-emerald-800 bg-emerald-50/50 rounded-t-lg" : "border-transparent text-slate-500 hover:text-slate-800"}`,
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableProperties, { className: "w-4 h-4 text-emerald-700" }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Matriks Multi-Tahun (Format Excel GMCC: 2024 s/d 2026)" }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "px-1.5 py-0.2 rounded-full text-[9px] bg-emerald-700 text-white font-bold",
-							children: "Excel View"
-						})
-					]
-				})]
+				className: "flex flex-wrap items-center gap-2 border-b border-slate-200 print:hidden",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						onClick: () => setActiveViewTab("yearly-summary"),
+						className: `flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer ${activeViewTab === "yearly-summary" ? "border-emerald-700 text-emerald-800 bg-emerald-50/50 rounded-t-lg" : "border-transparent text-slate-500 hover:text-slate-800"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarDays, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+							"Review Tahunan & Total Balance AL (",
+							selectedYear,
+							")"
+						] })]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						onClick: () => setActiveViewTab("multi-year-matrix"),
+						className: `flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer ${activeViewTab === "multi-year-matrix" ? "border-emerald-700 text-emerald-800 bg-emerald-50/50 rounded-t-lg" : "border-transparent text-slate-500 hover:text-slate-800"}`,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableProperties, { className: "w-4 h-4 text-emerald-700" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Matriks Multi-Tahun (Format Excel GMCC: 2024 s/d 2026)" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "px-1.5 py-0.2 rounded-full text-[9px] bg-emerald-700 text-white font-bold",
+								children: "Excel View"
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						onClick: () => setActiveViewTab("taken-report"),
+						className: `flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer ${activeViewTab === "taken-report" ? "border-emerald-700 text-emerald-800 bg-emerald-50/50 rounded-t-lg" : "border-transparent text-slate-500 hover:text-slate-800"}`,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarRange, { className: "w-4 h-4 text-emerald-700" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Laporan Pengambilan Cuti & Libur (Bulan / MTD / Tahun)" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "px-1.5 py-0.2 rounded-full text-[9px] bg-blue-700 text-white font-bold",
+								children: "MTD / Bulan / Tahun"
+							})
+						]
+					})
+				]
 			}),
 			currentUser.role === "DEPT_HEAD" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "p-3.5 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 flex items-center justify-between",
@@ -82170,7 +84105,7 @@ var LeaveReviewDashboard = () => {
 					children: [filteredReports.length, " Staf Terdata"]
 				})]
 			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			activeViewTab !== "taken-report" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3.5",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -82288,8 +84223,7 @@ var LeaveReviewDashboard = () => {
 						]
 					})
 				]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex-1 flex flex-col sm:flex-row items-center gap-3",
@@ -82343,7 +84277,7 @@ var LeaveReviewDashboard = () => {
 						" karyawan"
 					]
 				})]
-			}),
+			})] }),
 			activeViewTab === "yearly-summary" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -83013,6 +84947,10 @@ var LeaveReviewDashboard = () => {
 						})]
 					})
 				})]
+			}),
+			activeViewTab === "taken-report" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LeaveTakenReportView, {
+				effectiveDeptId,
+				onSelectEmployeeForLedger: (empId) => setSelectedEmployeeForLedger(empId)
 			}),
 			selectedEmployeeForLedger && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LeaveLedgerModal, {
 				isOpen: !!selectedEmployeeForLedger,
@@ -85629,6 +87567,7 @@ var GitHubSyncHub = () => {
 		return localStorage.getItem("gmcc_github_last_sync_time") || null;
 	});
 	const [copiedKey, setCopiedKey] = (0, import_react.useState)(null);
+	const [showToken, setShowToken] = (0, import_react.useState)(false);
 	const [commitMessage, setCommitMessage] = (0, import_react.useState)("chore: automated sync GMCC HCMS database snapshot");
 	const isInitialMount = import_react.useRef(true);
 	const debounceTimerRef = import_react.useRef(null);
@@ -85688,7 +87627,9 @@ var GitHubSyncHub = () => {
 				...options,
 				headers: proxyHeaders
 			});
-			if (proxyRes.ok || proxyRes.status === 404 || proxyRes.status === 401 || proxyRes.status === 403) return proxyRes;
+			const isRealProxy = proxyRes.headers.get("x-gmcc-github-proxy") === "1";
+			const contentType = proxyRes.headers.get("content-type") || "";
+			if (isRealProxy || proxyRes.ok && contentType.includes("application/json")) return proxyRes;
 		} catch (e) {
 			console.warn("Proxy route unavailable, falling back to direct GitHub API:", e);
 		}
@@ -85705,6 +87646,7 @@ var GitHubSyncHub = () => {
 	};
 	const handleVerifyConnection = async () => {
 		const { cleanOwner, cleanRepo } = sanitizeRepoInput(config.owner, config.repo);
+		const cleanToken = config.token.replace(/^Bearer\s+/i, "").replace(/^token\s+/i, "").trim();
 		if (!cleanOwner || !cleanRepo) {
 			setVerifyStatus({
 				success: false,
@@ -85712,24 +87654,43 @@ var GitHubSyncHub = () => {
 			});
 			return;
 		}
-		if (cleanOwner !== config.owner || cleanRepo !== config.repo) setConfig((prev) => ({
+		if (cleanOwner !== config.owner || cleanRepo !== config.repo || cleanToken !== config.token) setConfig((prev) => ({
 			...prev,
 			owner: cleanOwner,
-			repo: cleanRepo
+			repo: cleanRepo,
+			token: cleanToken
 		}));
 		setIsVerifying(true);
 		setVerifyStatus(null);
 		try {
-			const res = await callGitHubApi(`repos/${cleanOwner}/${cleanRepo}`, {}, config.token);
+			const res = await callGitHubApi(`repos/${cleanOwner}/${cleanRepo}`, {}, cleanToken);
 			if (!res.ok) {
-				if (res.status === 404) throw new Error(`Repository "${cleanOwner}/${cleanRepo}" tidak ditemukan atau berstatus Private tanpa Token yang valid.`);
-				else if (res.status === 401 || res.status === 403) throw new Error("Akses ditolak (401/403). Token Personal Access Token (PAT) Anda mungkin belum memiliki permission \"repo\" atau kuota API tercapai.");
-				else throw new Error(`Koneksi ke GitHub gagal dengan kode HTTP ${res.status}.`);
+				const errJson = await res.json().catch(() => ({}));
+				const ghMsg = errJson?.message ? ` (${errJson.message})` : "";
+				if (res.status === 404) throw new Error(`Repository "${cleanOwner}/${cleanRepo}" tidak ditemukan atau berstatus Private tanpa Token yang valid${ghMsg}.`);
+				else if (res.status === 401 || res.status === 403) throw new Error(`Akses ditolak (${res.status})${ghMsg}. Pastikan Personal Access Token (PAT) benar dan memiliki permission "repo".`);
+				else throw new Error(`Koneksi ke GitHub gagal dengan kode HTTP ${res.status}${ghMsg}.`);
 			}
 			const repoData = await res.json();
+			const canPush = repoData?.permissions?.push === true || repoData?.permissions?.admin === true;
+			if (cleanToken && repoData?.permissions && !canPush) {
+				setVerifyStatus({
+					success: false,
+					message: `Repository "${repoData.full_name}" terhubung, tetapi Token Anda hanya memiliki akses baca (read-only). Aktifkan scope "repo" agar bisa melakukan Push.`,
+					details: {
+						name: repoData.name,
+						defaultBranch: repoData.default_branch,
+						stars: repoData.stargazers_count,
+						isPrivate: repoData.private,
+						updatedAt: repoData.updated_at
+					}
+				});
+				addLog("error", `Token terhubung ke ${repoData.full_name} tetapi tidak memiliki izin Push/Write.`);
+				return;
+			}
 			setVerifyStatus({
 				success: true,
-				message: `Terhubung dengan sukses ke repository GitHub "${repoData.full_name}"!`,
+				message: cleanToken ? `Terhubung dengan akses Push/Write ke repository "${repoData.full_name}"!` : `Terhubung (Read-Only) ke repository publik "${repoData.full_name}". Masukkan PAT Token untuk Push.`,
 				details: {
 					name: repoData.name,
 					defaultBranch: repoData.default_branch,
@@ -85751,17 +87712,21 @@ var GitHubSyncHub = () => {
 	};
 	const handlePushToGitHub = async (silent = false, customMsg) => {
 		const { cleanOwner, cleanRepo } = sanitizeRepoInput(config.owner, config.repo);
-		const cleanToken = config.token.trim();
+		const cleanToken = config.token.replace(/^Bearer\s+/i, "").replace(/^token\s+/i, "").trim();
 		if (!cleanToken) {
 			if (silent) {
 				addLog("info", "Auto-sync tertunda: Masukkan GitHub Personal Access Token (PAT) di tab Pengaturan untuk sinkronisasi otomatis.");
 				return;
 			}
-			alert("GitHub Personal Access Token (PAT) diperlukan untuk melakukan commit & push langsung dari web app ke GitHub.\nSilakan masukkan Token di tab \"2. Pengaturan Token & Repo\".");
+			setVerifyStatus({
+				success: false,
+				message: "GitHub Personal Access Token (PAT) diperlukan untuk commit & push. Silakan isi Token di tab \"2. Pengaturan Token & Repo\"."
+			});
 			setActiveTab("CONFIG");
 			return;
 		}
 		setIsSyncing(true);
+		if (!silent) setVerifyStatus(null);
 		addLog("info", `${silent ? "[Auto-Sync] " : ""}Menyinkronkan snapshot data ke GitHub ${cleanOwner}/${cleanRepo}...`);
 		try {
 			const payload = {
@@ -85795,23 +87760,26 @@ var GitHubSyncHub = () => {
 			const contentString = JSON.stringify(payload, null, 2);
 			const bytes = new TextEncoder().encode(contentString);
 			let binary = "";
-			bytes.forEach((b) => binary += String.fromCharCode(b));
+			const chunkSize = 32768;
+			for (let i = 0; i < bytes.length; i += chunkSize) binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunkSize)));
 			const base64Content = btoa(binary);
-			const pathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/${config.dataPath}?ref=${config.branch}`;
+			const targetBranch = config.branch.trim() || "main";
+			const getPathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/${config.dataPath}?ref=${encodeURIComponent(targetBranch)}`;
+			const putPathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/${config.dataPath}`;
 			let existingSha = void 0;
 			try {
-				const getFileRes = await callGitHubApi(pathUrl, {}, cleanToken);
+				const getFileRes = await callGitHubApi(getPathUrl, {}, cleanToken);
 				if (getFileRes.ok) existingSha = (await getFileRes.json()).sha;
 			} catch (e) {
 				console.warn("File does not exist yet on remote, creating new:", e);
 			}
-			const commitRes = await callGitHubApi(pathUrl, {
+			const commitRes = await callGitHubApi(putPathUrl, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					message: customMsg || commitMessage || `chore(data): auto-sync GMCC database snapshot (${(/* @__PURE__ */ new Date()).toISOString()})`,
 					content: base64Content,
-					branch: config.branch,
+					branch: targetBranch,
 					sha: existingSha
 				})
 			}, cleanToken);
@@ -85826,10 +87794,16 @@ var GitHubSyncHub = () => {
 				localStorage.setItem("gmcc_github_last_sync_time", now);
 			} catch {}
 			addLog("success", `${silent ? "[Auto-Sync] " : ""}Berhasil commit database ke GitHub! SHA: ${commitResult.commit?.sha?.substring(0, 7) || "OK"}`);
-			if (!silent) alert(`Sinkronisasi ke GitHub Berhasil!\nFile ${config.dataPath} telah diperbarui pada repository ${cleanOwner}/${cleanRepo} branch ${config.branch}.`);
+			if (!silent) setVerifyStatus({
+				success: true,
+				message: `Sinkronisasi ke GitHub Berhasil! File ${config.dataPath} telah diperbarui pada ${cleanOwner}/${cleanRepo} (${targetBranch}).`
+			});
 		} catch (err) {
 			addLog("error", `${silent ? "[Auto-Sync] " : ""}Gagal push ke GitHub: ${err.message}`);
-			if (!silent) alert(`Gagal sinkronisasi ke GitHub:\n${err.message}`);
+			if (!silent) setVerifyStatus({
+				success: false,
+				message: `Gagal sinkronisasi ke GitHub: ${err.message}`
+			});
 		} finally {
 			setIsSyncing(false);
 		}
@@ -85872,65 +87846,103 @@ var GitHubSyncHub = () => {
 	]);
 	const handlePushGasTemplatesToGitHub = async () => {
 		const { cleanOwner, cleanRepo } = sanitizeRepoInput(config.owner, config.repo);
-		const cleanToken = config.token.trim();
+		const cleanToken = config.token.replace(/^Bearer\s+/i, "").replace(/^token\s+/i, "").trim();
 		if (!cleanToken) {
-			alert("GitHub Personal Access Token (PAT) diperlukan untuk menyimpan script ke GitHub.");
+			setVerifyStatus({
+				success: false,
+				message: "GitHub Personal Access Token (PAT) diperlukan untuk menyimpan script ke GitHub. Silakan isi Token di tab \"2. Pengaturan Token & Repo\"."
+			});
 			setActiveTab("CONFIG");
 			return;
 		}
 		setIsSyncing(true);
+		setVerifyStatus(null);
 		addLog("info", "Mengunggah file script Google Apps Script ke GitHub...");
 		try {
+			const targetBranch = config.branch.trim() || "main";
 			let uploadedCount = 0;
 			for (const gasFile of GAS_FILES) {
-				const pathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/${`${config.gasPath}/${gasFile.name}`}?ref=${config.branch}`;
+				const filePath = `${config.gasPath}/${gasFile.name}`;
+				const getPathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/${filePath}?ref=${encodeURIComponent(targetBranch)}`;
+				const putPathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/${filePath}`;
 				let existingSha = void 0;
 				try {
-					const checkRes = await callGitHubApi(pathUrl, {}, cleanToken);
+					const checkRes = await callGitHubApi(getPathUrl, {}, cleanToken);
 					if (checkRes.ok) existingSha = (await checkRes.json()).sha;
 				} catch (e) {}
 				const bytes = new TextEncoder().encode(gasFile.code);
 				let binary = "";
-				bytes.forEach((b) => binary += String.fromCharCode(b));
+				const chunkSize = 32768;
+				for (let i = 0; i < bytes.length; i += chunkSize) binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunkSize)));
 				const b64 = btoa(binary);
-				if ((await callGitHubApi(pathUrl, {
+				const putRes = await callGitHubApi(putPathUrl, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						message: `chore(gas): update ${gasFile.name} template`,
 						content: b64,
-						branch: config.branch,
+						branch: targetBranch,
 						sha: existingSha
 					})
-				}, cleanToken)).ok) uploadedCount++;
+				}, cleanToken);
+				if (!putRes.ok) {
+					const errJson = await putRes.json().catch(() => ({}));
+					throw new Error(errJson.message || `Gagal upload ${gasFile.name} (HTTP ${putRes.status})`);
+				}
+				uploadedCount++;
 			}
 			addLog("success", `Berhasil mengunggah ${uploadedCount} file script Google Apps Script ke folder "${config.gasPath}" di GitHub.`);
-			alert(`Berhasil! ${uploadedCount} file script Google Apps Script (.gs) telah tersimpan di repository GitHub Anda.`);
+			setVerifyStatus({
+				success: true,
+				message: `Berhasil! ${uploadedCount} file script Google Apps Script (.gs) telah tersimpan di repository ${cleanOwner}/${cleanRepo}.`
+			});
 		} catch (err) {
 			addLog("error", `Gagal upload GAS scripts: ${err.message}`);
-			alert(`Gagal upload GAS scripts: ${err.message}`);
+			setVerifyStatus({
+				success: false,
+				message: `Gagal upload GAS scripts: ${err.message}`
+			});
 		} finally {
 			setIsSyncing(false);
 		}
 	};
 	const handlePushIndexHtmlToGitHub = async () => {
 		const { cleanOwner, cleanRepo } = sanitizeRepoInput(config.owner, config.repo);
-		const cleanToken = config.token.trim();
+		const cleanToken = config.token.replace(/^Bearer\s+/i, "").replace(/^token\s+/i, "").trim();
 		if (!cleanToken) {
-			alert("GitHub Personal Access Token (PAT) diperlukan untuk push langsung ke GitHub.\\nSilakan masukkan Token Anda di tab \"2. Pengaturan Token & Repo\".\\nAtau gunakan tombol \"Unduh index.html\" untuk upload drag & drop tanpa token.");
+			setVerifyStatus({
+				success: false,
+				message: "GitHub Personal Access Token (PAT) diperlukan untuk push index.html langsung ke GitHub. Silakan masukkan Token di tab \"2. Pengaturan Token & Repo\", atau klik \"Unduh index.html\" untuk upload manual."
+			});
 			setActiveTab("CONFIG");
 			return;
 		}
 		setIsSyncing(true);
+		setVerifyStatus(null);
 		addLog("info", `Mengunggah index.html (tampilan & sistem terbaru) ke GitHub ${cleanOwner}/${cleanRepo} branch ${config.branch}...`);
 		try {
-			const res = await fetch("/full-app-index.html");
-			if (!res.ok) throw new Error("Gagal membaca berkas bundle index.html");
-			const htmlText = await res.text();
-			const pathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/index.html?ref=${config.branch}`;
+			let htmlText = "";
+			for (const candidateUrl of [
+				"./full-app-index.html",
+				"/full-app-index.html",
+				"/api/download-index"
+			]) try {
+				const res = await fetch(candidateUrl);
+				if (res.ok) {
+					const text = await res.text();
+					if (text && (text.includes("<!doctype html") || text.includes("<!DOCTYPE html")) && text.length > 5e4) {
+						htmlText = text;
+						break;
+					}
+				}
+			} catch {}
+			if (!htmlText) throw new Error("Gagal membaca berkas bundle index.html");
+			const targetBranch = config.branch.trim() || "main";
+			const getPathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/index.html?ref=${encodeURIComponent(targetBranch)}`;
+			const putPathUrl = `repos/${cleanOwner}/${cleanRepo}/contents/index.html`;
 			let existingSha = void 0;
 			try {
-				const getFileRes = await callGitHubApi(pathUrl, {}, cleanToken);
+				const getFileRes = await callGitHubApi(getPathUrl, {}, cleanToken);
 				if (getFileRes.ok) existingSha = (await getFileRes.json()).sha;
 			} catch (e) {}
 			const bytes = new TextEncoder().encode(htmlText);
@@ -85938,13 +87950,13 @@ var GitHubSyncHub = () => {
 			const chunkSize = 32768;
 			for (let i = 0; i < bytes.length; i += chunkSize) binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunkSize)));
 			const base64Content = btoa(binary);
-			const commitRes = await callGitHubApi(pathUrl, {
+			const commitRes = await callGitHubApi(putPathUrl, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					message: `deploy: update index.html - logo baru GMCC, perbaikan ledger & hapus extra off (${(/* @__PURE__ */ new Date()).toISOString()})`,
+					message: `deploy: update index.html - laporan detail ledger, dashboard approval alert & sync fix (${(/* @__PURE__ */ new Date()).toISOString()})`,
 					content: base64Content,
-					branch: config.branch,
+					branch: targetBranch,
 					sha: existingSha
 				})
 			}, cleanToken);
@@ -85953,25 +87965,27 @@ var GitHubSyncHub = () => {
 				throw new Error(errJson.message || `Gagal commit index.html ke GitHub (HTTP ${commitRes.status})`);
 			}
 			addLog("success", `BERHASIL! File index.html terbaru telah ter-push ke repository ${cleanOwner}/${cleanRepo}. GitHub Pages akan otomatis aktif dalam 1-2 menit.`);
-			alert(`Push Berhasil!\\nFile index.html telah diunggah ke GitHub (${cleanOwner}/${cleanRepo}).\\nGitHub Pages sedang memproses deploy. Silakan tunggu 1-2 menit lalu refresh https://${cleanOwner}.github.io/${cleanRepo}/ (Ctrl+F5).`);
+			setVerifyStatus({
+				success: true,
+				message: `Push Berhasil! File index.html telah diunggah ke GitHub (${cleanOwner}/${cleanRepo}). Tunggu 1-2 menit lalu refresh https://${cleanOwner}.github.io/${cleanRepo}/ (Ctrl+F5).`
+			});
 		} catch (err) {
 			addLog("error", `Gagal push index.html: ${err.message}`);
-			alert(`Gagal push index.html:\\n${err.message}`);
+			setVerifyStatus({
+				success: false,
+				message: `Gagal push index.html: ${err.message}`
+			});
 		} finally {
 			setIsSyncing(false);
 		}
 	};
 	const handleDownloadIndexHtml = () => {
-		try {
-			const a = document.createElement("a");
-			a.href = "/full-app-index.html";
-			a.download = "index.html";
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-		} catch {
-			window.open("/full-app-index.html", "_blank");
-		}
+		const a = document.createElement("a");
+		a.href = "./full-app-index.html";
+		a.download = "index.html";
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
 	};
 	const cliCommands = (0, import_react.useMemo)(() => {
 		const repoUrl = `https://github.com/${config.owner}/${config.repo}.git`;
@@ -86512,15 +88526,24 @@ var GitHubSyncHub = () => {
 									children: ["Buat Token Baru di GitHub ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExternalLink, { className: "w-3 h-3" })]
 								})]
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "password",
-								value: config.token,
-								onChange: (e) => setConfig({
-									...config,
-									token: e.target.value
-								}),
-								placeholder: "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-								className: "w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 font-mono text-xs"
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "relative",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: showToken ? "text" : "password",
+									value: config.token,
+									onChange: (e) => setConfig({
+										...config,
+										token: e.target.value
+									}),
+									placeholder: "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+									className: "w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 text-slate-800 font-mono text-xs"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setShowToken((prev) => !prev),
+									className: "absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer",
+									title: showToken ? "Sembunyikan Token" : "Tampilkan Token",
+									children: showToken ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EyeOff, { className: "w-4 h-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "w-4 h-4" })
+								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
 								className: "text-[11px] text-slate-500 mt-1",
@@ -86603,16 +88626,29 @@ var GitHubSyncHub = () => {
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "pt-4 border-t border-slate-100 flex items-center justify-between",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
 								onClick: handleVerifyConnection,
 								disabled: isVerifying,
-								className: "inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors",
+								className: "inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: `w-3.5 h-3.5 ${isVerifying ? "animate-spin" : ""}` }), "Uji Koneksi Repository"]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
 								onClick: () => {
-									alert("Pengaturan GitHub berhasil disimpan!");
+									const { cleanOwner, cleanRepo } = sanitizeRepoInput(config.owner, config.repo);
+									const cleanToken = config.token.replace(/^Bearer\s+/i, "").replace(/^token\s+/i, "").trim();
+									setConfig((prev) => ({
+										...prev,
+										owner: cleanOwner,
+										repo: cleanRepo,
+										token: cleanToken
+									}));
+									setVerifyStatus({
+										success: true,
+										message: `Pengaturan GitHub disimpan untuk ${cleanOwner}/${cleanRepo} (${config.branch}).`
+									});
 									setActiveTab("SYNC");
 								},
-								className: "px-5 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-xs transition-colors",
+								className: "px-5 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-xs transition-colors cursor-pointer",
 								children: "Simpan Konfigurasi"
 							})]
 						})
@@ -86989,16 +89025,18 @@ var ErrorBoundary = class extends import_react.Component {
 function MainApp() {
 	const { isAuthenticated, currentUser } = useApp();
 	const [activeModule, setActiveModule] = (0, import_react.useState)("dashboard");
+	const [moduleSubTab, setModuleSubTab] = (0, import_react.useState)(void 0);
 	const [mobileMenuOpen, setMobileMenuOpen] = (0, import_react.useState)(false);
-	const handleNavigate = (module) => {
+	const handleNavigate = (module, _empId, subTab) => {
 		setActiveModule(module);
+		setModuleSubTab(subTab);
 	};
 	if (!isAuthenticated) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoginPage, {});
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "flex h-screen bg-slate-100 font-sans text-slate-900 antialiased overflow-hidden print:h-auto print:overflow-visible print:bg-white",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sidebar, {
 			activeModule,
-			onSelectModule: setActiveModule,
+			onSelectModule: (m) => handleNavigate(m),
 			isOpenMobile: mobileMenuOpen,
 			onCloseMobile: () => setMobileMenuOpen(false)
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -87018,8 +89056,8 @@ function MainApp() {
 							activeModule === "personal-files" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PersonalFileManager, {}),
 							activeModule === "contracts" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ContractManager, {}),
 							activeModule === "leave" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LeaveManager, { onNavigateToReview: () => handleNavigate("leave-review") }),
-							activeModule === "leave-review" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LeaveReviewDashboard, {}),
-							activeModule === "training" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TrainingManager, {}),
+							activeModule === "leave-review" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LeaveReviewDashboard, { initialTab: moduleSubTab === "taken-report" || moduleSubTab === "multi-year-matrix" || moduleSubTab === "yearly-summary" ? moduleSubTab : void 0 }),
+							activeModule === "training" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TrainingManager, { initialTab: moduleSubTab === "PLANS" || moduleSubTab === "ATTENDANCE" || moduleSubTab === "DASHBOARD" ? moduleSubTab : void 0 }),
 							activeModule === "github-sync" && (currentUser.role === "ADMIN" || currentUser.role === "GM" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(GitHubSyncHub, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OverviewDashboard, { onNavigate: handleNavigate })),
 							activeModule === "gas-scripts" && (currentUser.role === "ADMIN" || currentUser.role === "GM" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(GoogleAppsScriptHub, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OverviewDashboard, { onNavigate: handleNavigate })),
 							activeModule === "admin" && (currentUser.role === "ADMIN" || currentUser.role === "GM" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AdminManager, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OverviewDashboard, { onNavigate: handleNavigate }))
@@ -87438,6 +89476,7 @@ window.forceClearCacheAndReload = async () => {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-outline-style: solid;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;
@@ -87474,6 +89513,11 @@ window.forceClearCacheAndReload = async () => {
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-orange-50: oklch(98% .016 73.684);
+    --color-orange-100: oklch(95.4% .038 75.164);
+    --color-orange-200: oklch(90.1% .076 70.697);
+    --color-orange-300: oklch(83.7% .128 66.29);
+    --color-orange-800: oklch(47% .157 37.304);
+    --color-orange-900: oklch(40.8% .123 38.172);
     --color-amber-50: oklch(98.7% .022 95.277);
     --color-amber-100: oklch(96.2% .059 95.617);
     --color-amber-200: oklch(92.4% .12 95.746);
@@ -87497,6 +89541,7 @@ window.forceClearCacheAndReload = async () => {
     --color-emerald-900: oklch(37.8% .077 168.94);
     --color-emerald-950: oklch(26.2% .051 172.552);
     --color-teal-50: oklch(98.4% .014 180.72);
+    --color-teal-100: oklch(95.3% .051 180.801);
     --color-teal-200: oklch(91% .096 180.426);
     --color-teal-300: oklch(85.5% .138 181.071);
     --color-teal-400: oklch(77.7% .152 181.912);
@@ -87506,6 +89551,11 @@ window.forceClearCacheAndReload = async () => {
     --color-teal-800: oklch(43.7% .078 188.216);
     --color-teal-900: oklch(38.6% .063 188.416);
     --color-teal-950: oklch(27.7% .046 192.524);
+    --color-cyan-100: oklch(95.6% .045 203.388);
+    --color-cyan-200: oklch(91.7% .08 205.041);
+    --color-cyan-300: oklch(86.5% .127 207.078);
+    --color-cyan-800: oklch(45% .085 224.283);
+    --color-cyan-900: oklch(39.8% .07 227.392);
     --color-blue-50: oklch(97% .014 254.604);
     --color-blue-100: oklch(93.2% .032 255.585);
     --color-blue-200: oklch(88.2% .059 254.128);
@@ -87876,6 +89926,10 @@ window.forceClearCacheAndReload = async () => {
 @layer utilities {
   .pointer-events-none {
     pointer-events: none;
+  }
+
+  .collapse {
+    visibility: collapse;
   }
 
   .invisible {
@@ -88326,6 +90380,10 @@ window.forceClearCacheAndReload = async () => {
     display: table;
   }
 
+  .table-header-group {
+    display: table-header-group;
+  }
+
   .h-1 {
     height: var(--spacing);
   }
@@ -88722,12 +90780,32 @@ window.forceClearCacheAndReload = async () => {
     min-width: 180px;
   }
 
+  .min-w-\[190px\] {
+    min-width: 190px;
+  }
+
   .min-w-\[200px\] {
     min-width: 200px;
   }
 
+  .min-w-\[230px\] {
+    min-width: 230px;
+  }
+
+  .min-w-\[240px\] {
+    min-width: 240px;
+  }
+
+  .min-w-\[260px\] {
+    min-width: 260px;
+  }
+
   .flex-1 {
     flex: 1;
+  }
+
+  .flex-shrink {
+    flex-shrink: 1;
   }
 
   .shrink-0 {
@@ -89050,6 +91128,10 @@ window.forceClearCacheAndReload = async () => {
     border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
   }
 
+  :where(.divide-amber-100 > :not(:last-child)) {
+    border-color: var(--color-amber-100);
+  }
+
   :where(.divide-slate-100 > :not(:last-child)) {
     border-color: var(--color-slate-100);
   }
@@ -89309,6 +91391,10 @@ window.forceClearCacheAndReload = async () => {
     border-color: var(--color-amber-800);
   }
 
+  .border-amber-900 {
+    border-color: var(--color-amber-900);
+  }
+
   .border-blue-100 {
     border-color: var(--color-blue-100);
   }
@@ -89331,6 +91417,14 @@ window.forceClearCacheAndReload = async () => {
 
   .border-blue-800 {
     border-color: var(--color-blue-800);
+  }
+
+  .border-cyan-200 {
+    border-color: var(--color-cyan-200);
+  }
+
+  .border-cyan-300 {
+    border-color: var(--color-cyan-300);
   }
 
   .border-emerald-100 {
@@ -89603,6 +91697,14 @@ window.forceClearCacheAndReload = async () => {
     .border-indigo-900\/50 {
       border-color: color-mix(in oklab, var(--color-indigo-900) 50%, transparent);
     }
+  }
+
+  .border-orange-200 {
+    border-color: var(--color-orange-200);
+  }
+
+  .border-orange-300 {
+    border-color: var(--color-orange-300);
   }
 
   .border-purple-100 {
@@ -90283,6 +92385,10 @@ window.forceClearCacheAndReload = async () => {
     }
   }
 
+  .bg-cyan-100 {
+    background-color: var(--color-cyan-100);
+  }
+
   .bg-emerald-50 {
     background-color: var(--color-emerald-50);
   }
@@ -90653,6 +92759,10 @@ window.forceClearCacheAndReload = async () => {
     }
   }
 
+  .bg-orange-100 {
+    background-color: var(--color-orange-100);
+  }
+
   .bg-purple-50 {
     background-color: var(--color-purple-50);
   }
@@ -90664,6 +92774,16 @@ window.forceClearCacheAndReload = async () => {
   @supports (color: color-mix(in lab, red, red)) {
     .bg-purple-50\/30 {
       background-color: color-mix(in oklab, var(--color-purple-50) 30%, transparent);
+    }
+  }
+
+  .bg-purple-50\/40 {
+    background-color: #faf5ff66;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-purple-50\/40 {
+      background-color: color-mix(in oklab, var(--color-purple-50) 40%, transparent);
     }
   }
 
@@ -90725,6 +92845,10 @@ window.forceClearCacheAndReload = async () => {
 
   .bg-purple-700 {
     background-color: var(--color-purple-700);
+  }
+
+  .bg-purple-900 {
+    background-color: var(--color-purple-900);
   }
 
   .bg-rose-50 {
@@ -91111,6 +93235,10 @@ window.forceClearCacheAndReload = async () => {
     background-color: var(--color-teal-50);
   }
 
+  .bg-teal-100 {
+    background-color: var(--color-teal-100);
+  }
+
   .bg-teal-600 {
     background-color: var(--color-teal-600);
   }
@@ -91354,6 +93482,27 @@ window.forceClearCacheAndReload = async () => {
     --tw-gradient-stops: var(--tw-gradient-via-stops);
   }
 
+  .via-rose-50 {
+    --tw-gradient-via: var(--color-rose-50);
+    --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-via-stops);
+  }
+
+  .via-rose-50\/70 {
+    --tw-gradient-via: #fff1f2b3;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .via-rose-50\/70 {
+      --tw-gradient-via: color-mix(in oklab, var(--color-rose-50) 70%, transparent);
+    }
+  }
+
+  .via-rose-50\/70 {
+    --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-via-stops);
+  }
+
   .via-slate-50 {
     --tw-gradient-via: var(--color-slate-50);
     --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
@@ -91412,6 +93561,11 @@ window.forceClearCacheAndReload = async () => {
     --tw-gradient-via: transparent;
     --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
     --tw-gradient-stops: var(--tw-gradient-via-stops);
+  }
+
+  .to-amber-50 {
+    --tw-gradient-to: var(--color-amber-50);
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
   }
 
   .to-black {
@@ -91890,6 +94044,10 @@ window.forceClearCacheAndReload = async () => {
     text-align: right;
   }
 
+  .align-top {
+    vertical-align: top;
+  }
+
   .font-mono {
     font-family: var(--font-mono);
   }
@@ -91951,6 +94109,10 @@ window.forceClearCacheAndReload = async () => {
 
   .text-\[9px\] {
     font-size: 9px;
+  }
+
+  .text-\[10\.5px\] {
+    font-size: 10.5px;
   }
 
   .text-\[10px\] {
@@ -92047,6 +94209,10 @@ window.forceClearCacheAndReload = async () => {
     white-space: pre-line;
   }
 
+  .text-amber-50 {
+    color: var(--color-amber-50);
+  }
+
   .text-amber-100 {
     color: var(--color-amber-100);
   }
@@ -92121,6 +94287,14 @@ window.forceClearCacheAndReload = async () => {
 
   .text-blue-950 {
     color: var(--color-blue-950);
+  }
+
+  .text-cyan-800 {
+    color: var(--color-cyan-800);
+  }
+
+  .text-cyan-900 {
+    color: var(--color-cyan-900);
   }
 
   .text-emerald-100 {
@@ -92233,6 +94407,18 @@ window.forceClearCacheAndReload = async () => {
 
   .text-indigo-950 {
     color: var(--color-indigo-950);
+  }
+
+  .text-orange-800 {
+    color: var(--color-orange-800);
+  }
+
+  .text-orange-900 {
+    color: var(--color-orange-900);
+  }
+
+  .text-purple-200 {
+    color: var(--color-purple-200);
   }
 
   .text-purple-300 {
@@ -92609,6 +94795,10 @@ window.forceClearCacheAndReload = async () => {
     }
   }
 
+  .ring-blue-300 {
+    --tw-ring-color: var(--color-blue-300);
+  }
+
   .ring-blue-400 {
     --tw-ring-color: var(--color-blue-400);
   }
@@ -92719,12 +94909,29 @@ window.forceClearCacheAndReload = async () => {
     }
   }
 
+  .ring-purple-200 {
+    --tw-ring-color: var(--color-purple-200);
+  }
+
+  .ring-purple-300 {
+    --tw-ring-color: var(--color-purple-300);
+  }
+
   .ring-purple-500 {
     --tw-ring-color: var(--color-purple-500);
   }
 
+  .ring-rose-300 {
+    --tw-ring-color: var(--color-rose-300);
+  }
+
   .ring-slate-200 {
     --tw-ring-color: var(--color-slate-200);
+  }
+
+  .outline {
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
   }
 
   .blur {
@@ -92771,6 +94978,11 @@ window.forceClearCacheAndReload = async () => {
 
   .backdrop-blur-xs {
     --tw-backdrop-blur: blur(var(--blur-xs));
+    -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+    backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+  }
+
+  .backdrop-filter {
     -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
   }
@@ -92856,6 +95068,10 @@ window.forceClearCacheAndReload = async () => {
       background-color: var(--color-blue-600);
     }
 
+    .group-hover\:bg-blue-700:is(:where(.group):hover *) {
+      background-color: var(--color-blue-700);
+    }
+
     .group-hover\:bg-emerald-600:is(:where(.group):hover *) {
       background-color: var(--color-emerald-600);
     }
@@ -92935,6 +95151,10 @@ window.forceClearCacheAndReload = async () => {
       border-color: var(--color-amber-300);
     }
 
+    .hover\:border-blue-600:hover {
+      border-color: var(--color-blue-600);
+    }
+
     .hover\:border-emerald-300:hover {
       border-color: var(--color-emerald-300);
     }
@@ -92957,6 +95177,16 @@ window.forceClearCacheAndReload = async () => {
 
     .hover\:bg-amber-50:hover {
       background-color: var(--color-amber-50);
+    }
+
+    .hover\:bg-amber-50\/40:hover {
+      background-color: #fffbeb66;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-amber-50\/40:hover {
+        background-color: color-mix(in oklab, var(--color-amber-50) 40%, transparent);
+      }
     }
 
     .hover\:bg-amber-100:hover {
@@ -92983,6 +95213,16 @@ window.forceClearCacheAndReload = async () => {
 
     .hover\:bg-amber-900:hover {
       background-color: var(--color-amber-900);
+    }
+
+    .hover\:bg-blue-50\/60:hover {
+      background-color: #eff6ff99;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-blue-50\/60:hover {
+        background-color: color-mix(in oklab, var(--color-blue-50) 60%, transparent);
+      }
     }
 
     .hover\:bg-blue-100:hover {
@@ -93189,6 +95429,16 @@ window.forceClearCacheAndReload = async () => {
       }
     }
 
+    .hover\:bg-slate-50\/90:hover {
+      background-color: #f8fafce6;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-slate-50\/90:hover {
+        background-color: color-mix(in oklab, var(--color-slate-50) 90%, transparent);
+      }
+    }
+
     .hover\:bg-slate-100:hover {
       background-color: var(--color-slate-100);
     }
@@ -93277,6 +95527,10 @@ window.forceClearCacheAndReload = async () => {
       color: var(--color-indigo-900);
     }
 
+    .hover\:text-purple-950:hover {
+      color: var(--color-purple-950);
+    }
+
     .hover\:text-rose-400:hover {
       color: var(--color-rose-400);
     }
@@ -93359,6 +95613,10 @@ window.forceClearCacheAndReload = async () => {
 
   .focus\:border-indigo-500:focus {
     border-color: var(--color-indigo-500);
+  }
+
+  .focus\:border-purple-600:focus {
+    border-color: var(--color-purple-600);
   }
 
   .focus\:border-rose-600:focus {
@@ -93758,6 +96016,10 @@ window.forceClearCacheAndReload = async () => {
       margin: 0;
     }
 
+    .print\:block {
+      display: block;
+    }
+
     .print\:hidden {
       display: none;
     }
@@ -94125,6 +96387,12 @@ window.forceClearCacheAndReload = async () => {
   initial-value: 0 0 #0000;
 }
 
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+
 @property --tw-blur {
   syntax: "*";
   inherits: false
@@ -94277,7 +96545,7 @@ window.forceClearCacheAndReload = async () => {
   }
 }
 /*$vite$:1*/</style>
-  <link rel="manifest" href="./manifest.webmanifest"><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+  <link rel="manifest" href="./manifest.webmanifest"></head>
   <body>
     <div id="root"></div>
   </body>
